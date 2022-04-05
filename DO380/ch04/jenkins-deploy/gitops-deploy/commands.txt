@@ -1,0 +1,30 @@
+ 55  git clone https://github.com/rshipman24/gitops-deploy.git
+  82  git status
+   83  git add *
+   84  git commit -m 'simple app and pipeline'
+   85  git branch -M main
+   86  git push -u origin main
+   89  oc login -u developer -p developer https://api.ocp4.example.com:6443
+   90  oc new-project gitops-deploy
+   91  oc get template -n openshift | grep jenkins
+   92  oc process jenkins-persistent --parameters -n openshift
+   94  oc new-app --template jenkins-persistent -p JENKINS_IMAGE_STREAM_TAG=jenkins:v4.8
+   95  oc login -u admin -p redhat
+   96  oc adm policy add-cluster-role-to-user self-provisioner -z jenkins -n gitops-deploy
+   97  oc login -u developer -p developer
+   98  oc project gitops-deploy
+   99  oc get pods
+  100  oc logs jenkins-1-9w6mh
+  101  oc get routes
+  102  oc get pods
+  105  oc status -n hello-main-1
+  107  ls
+  108  cp ~/DO380/labs/gitops-deploy/sh/monitor-build.sh .
+  109  vi monitor-build.sh 
+  110  oc get pods
+  111  vi /home/student/developer-token.txt
+  113  cat monitor-build.sh 
+  114  ./monitor-build.sh 
+  115* vi ~/developer-token.txt 
+  116  bash -x ./monitor-build.sh 
+

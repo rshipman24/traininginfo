@@ -1,0 +1,8 @@
+  331  lab operators-cluster start
+  332  VAR="$(oc get clusterversion version -o jsonpath='{.status.desired.image}')"
+  333  oc adm release extract --from=$VER --to=release-image
+  338  ls release-image/*samples*
+  339  less release-image/*samples*06-operator.yaml
+  340  oc get pods -n openshift-cluster-samples-operator
+  341  oc logs pod/cluster-samples-operator-848dc4847-c7ktx -n openshift-cluster-samples-operator --all-containers
+

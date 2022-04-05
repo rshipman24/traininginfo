@@ -1,0 +1,26 @@
+    1  ls -lrt
+    2  exit
+    3  ls -lrt
+    4  ls -lrta
+    5  exit
+    6  exit
+    7  podman login quay.io
+    8  skopeo copy docker://quay.io/redhattraining/versioned-hello:v1.0 docker://quay.io/ralph_shipman/versioned-hello:latest
+    9  find / -name .config
+   10  podman logout
+   11  podman logout quay.io
+   12  podman login quay.io
+   13  skopeo copy docker://quay.io/redhattraining/versioned-hello:v1.0 docker://quay.io/ralph.shipman/versioned-hello:latest
+   14  skopeo copy docker://quay.io/redhattraining/versioned-hello:v1.0 docker://quay.io/ralph_shipman/versioned-hello:latest
+   15  oc import-image quay.io/ralph_shipman/versioned-hello:latest --confirm --scheduled
+   16  oc set triggers deployment/hello --from-image versioned-hello:latest -c hello
+   17  oc get deployment/hello -o json 
+   18  oc get deployment/hello -o json | jq '.metadata.annotations'
+   19  skopeo copy docker://quay.io/redhattraining/versioned-hello:v1.1 docker://quay.io/ralph_shipman/versioned-hello:latest
+   20  oc import quay.io/ralph_shipman/versioned-hello:latest
+   21  oc import-image quay.io/ralph_shipman/versioned-hello:latest
+   22  oc get deployment/hello -o json | jq '.metadata.annotations'
+   23  lab k8s-optimize finish
+   24  history
+   25  history 
+   26  history > image_trigger_commands

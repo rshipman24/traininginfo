@@ -1,0 +1,10 @@
+console=console-openshift-console.apps.ocp4.example.com
+
+curl https://console-openshift-console.apps.ocp4.example.com -k -v 2>&1 | grep 'expire date'
+
+hosts=oauth-openshift.apps.ocp4.example.com console-openshift-console.apps.ocp4.example.com downloads-openshift-console.apps.ocp4.example.com alertmanager-main-openshift-monitoring.apps.ocp4.example.com grafana-openshift-monitoring.apps.ocp4.example.com prometheus-k8s-openshift-monitoring.apps.ocp4.example.com thanos-querier-openshift-monitoring.apps.ocp4.example.com
+
+for host in oauth-openshift.apps.ocp4.example.com console-openshift-console.apps.ocp4.example.com downloads-openshift-console.apps.ocp4.example.com alertmanager-main-openshift-monitoring.apps.ocp4.example.com grafana-openshift-monitoring.apps.ocp4.example.com prometheus-k8s-openshift-monitoring.apps.ocp4.example.com thanos-querier-openshift-monitoring.apps.ocp4.example.com ; do curl https://thanos-querier-openshift-monitoring.apps.ocp4.example.com -k -w %{url_effective} %{http_code}n -o /dev/null -s ; done
+
+filter='?(.name==htpasswd_provider)'
+oc get oauth cluster -o jsonpath={.spec.identityProviders[?(.name=="htpasswd_provider")].htpasswd.fileData.name}{\n}

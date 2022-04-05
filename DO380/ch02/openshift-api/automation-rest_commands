@@ -1,0 +1,18 @@
+  200  lab automation-rest start
+  201  curl -k https://api.ocp4.example.com:6443/api
+  203  oc get route -n openshift-authentication
+  204  OAUTH_HOST=$(oc get route oauth-openshift -n openshift-authentication -o jsonpath='{.spec.host}')
+  205  echo $OAUTH_HOST
+  206  curl -u admin -kv "https://$OAUTH_HOST/oauth/authorize?client_id=openshift-challenging-client&response_type=token"
+  207  oc whoami -t
+  208  TOKEN=sha256~t8KPlTv1RYj-2KQqcukH92nEWUlreqrQQZQj5daHFSM
+  209  HEADER="Authorization: Bearer $TOKEN"
+  211  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/api
+  212  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/api/v1
+  213  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/api/v1/pods
+  214  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/api/v1/pods | jq ".items[].metadata.name"
+  215   oc explain routes
+  216  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/apis/route.openshift.io/v1
+  221  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/apis/route.openshift.io/v1/routes | jq '.items[].spec.host'
+  222  lab automation-rest finish
+

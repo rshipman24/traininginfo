@@ -1,0 +1,15 @@
+  280  vi file-integrity-operator-namespace.yaml
+  281  oc apply -f file-integrity-operator-namespace.yaml 
+  282  oc project openshift-file-integrity
+  283  vi file-integrity-operator-group.yaml
+  284  oc apply -f file-integrity-operator-group.yaml 
+  285  vi file-integrity-operator-subscription.yaml
+  286  oc apply -f file-integrity-operator-subscription.yaml 
+  288  oc get subs
+  289  oc get operatorgroup
+  290  oc get oc describe file-integrity-operator-sub
+  291  oc describe file-integrity-operator-sub
+  292  oc describe sub file-integrity-operator-sub
+  293  oc get csv
+  294  oc describe csv file-integrity-operator.v0.1.13
+
