@@ -1,0 +1,10 @@
+  547  oc create secret generic ldap-secret --from-literal=bindPassword='Redhat123@!' -n openshift-config
+  550  curl -O http://idm.ocp4.example.com/ipa/config/ca.crt
+  552  cat ca.crt 
+  554  oc create configmap -n openshift-config ca-config-map --from-file=ca.crt
+  555  cd ~/DO380/labs/auth-ldap/
+  557  vi ldap-cr.yml 
+  559  oc apply -f ldap-cr.yml 
+  560  watch oc get pods -n openshift-authentication
+  608  oc login -u openshift-user -p openshift-user
+

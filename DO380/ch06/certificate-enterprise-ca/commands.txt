@@ -1,0 +1,22 @@
+ 780  cd ~/DO380/labs/certificates-enterprise-ca/
+  782  openssl x509 -in wildcard-api.pem -noout -subject -issuer -ext 'subjectAltName' -dates
+  784  cat wildcard-api.pem /etc/pki/tls/certs/classroom-ca.pem 
+  785  cat wildcard-api.pem /etc/pki/tls/certs/classroom-ca.pem > combined-cert.pem
+  786  cat combined-cert.pem 
+  801  cat apiserver-cluster.yaml 
+  802  vi apiserver-cluster.yaml 
+  806  oc apply -f apiserver-cluster.yaml 
+  807  watch oc get clusteroperator/kube-apiserver
+  810  oc create configmap combined-certs --from-file ca-bundle.crt=combined-cert.pem -n openshift-config
+  811  vi proxy-cluster.yaml 
+  813  oc apply -f proxy-cluster.yaml 
+  818  oc create secret tls custom-tls-bundle --cert combined-cert.pem --key wildcard-api-key.pem -n openshift-ingress
+  819  vi ingresscontrollers.yaml 
+  821  oc apply -f ingresscontrollers.yaml 
+  823  watch oc get pods -n openshift-ingress
+  824  oc whoami --show-console
+  826  watch "oc get co/kube-apiserver; oc get pods -l app=openshift-kube-apiserver -n openshift-kube-apiserver"
+  839  oc describe apiserver 
+  841  oc describe proxy cluster
+  849  oc describe ingresscontroller default -n openshift-ingress-operator
+

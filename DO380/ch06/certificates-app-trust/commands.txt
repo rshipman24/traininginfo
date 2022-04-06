@@ -1,0 +1,36 @@
+  869  oc whoami
+  870  oc get proxy/cluster -o yaml
+  872  oc get configmap combined-certs -n openshift-config -o jsonpath='{.data.*}' | grep Classroom
+  873  oc new-project certificates-app-trust
+  874  oc new-app --name hello1 --docker-image quay.io/redhattraining/hello-world-nginx:v1.0
+  875  oc create route edge --service hello1 --hostname hello1-trust.apps.ocp4.example.com
+  876  oc new-app --name hello2 --docker-image quay.io/redhattraining/hello-world-nginx:v1.0
+  877  oc create route edge --service hello2 --hostname hello2-trust.apps.ocp4.example.com
+  878  oc get routes
+  880  curl https://hello1-trust.apps.ocp4.example.com
+  881  curl https://hello2-trust.apps.ocp4.example.com
+  882  oc get deployments
+  883  oc exec -it deployment/hello1 -- /bin/bash
+	   curl https://hello2-trust.apps.ocp4.example.com
+	   exit
+  884  oc create configmap ca-certs
+  885  oc label configmap ca-certs config.openshift.io/inject-trusted-cabundle=true
+  886  oc get configmap ca-certs -o yaml | head -n 6
+  887  oc set volume deployment/hello1 -t configmap --name trusted-ca --add --read-only=true --mount-path /etc/pki/ca-trust/extracted/pem --configmap-name ca-certs
+  888  oc edit deployment/hello1
+	   .......
+           defaultMode: 420
+           items:
+           - key: ca-bundle.crt
+             path: tls-ca-bundle.crt
+           name: ca-certs
+           ........	
+  889  oc get pods
+  890  oc get routes -l app=hello2
+  892  oc exec -it deployment/hello1 -- /bin/bash
+  895  cd certificates-app-trust/
+	   grep Classroom /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+           curl https://hello2-trust.apps.ocp4.example.com
+           exit
+  896  history
+
