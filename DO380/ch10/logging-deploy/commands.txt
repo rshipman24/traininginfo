@@ -1,0 +1,8 @@
+ 1375  cd ~/DO380/labs/logging-deploy/
+ 1377  vi cl-minimal.yml 
+ 1378  oc whoami
+ 1379  ansible-playbook cluster-logging.yml -v
+ 1380  oc get csv -A
+ 1381  oc get csv -n openshift-logging
+ 1382  watch oc get deployment,pod,pvc,svc,route -n openshift-logging
+

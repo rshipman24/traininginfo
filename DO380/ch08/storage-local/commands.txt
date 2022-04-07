@@ -1,0 +1,31 @@
+ 1186  oc whoami
+ 1187  oc get nodes
+ 1188  oc debug node/worker06 -- lsblk
+ 1189  oc debug node/worker01 -- lsblk
+ 1190  oc new-project storage-local
+ 1191  cd ~/DO380/labs/storage-local/
+ 1192  cat resources/operator-group.yml 
+ 1193  oc create -f resources/operator-group.yml 
+ 1194  cat resources/subscription.yml 
+ 1195  vi resources/subscription.yml 
+ 1196  oc get packagemanifest | grep storage
+ 1197  oc get packagemanifest local-storage-operator | grep source
+ 1199  oc describe packagemanifests local-storage-operator | grep Source
+ 1200  oc describe packagemanifests local-storage-operator | grep Channel
+ 1202  oc apply resources/subscription.yml 
+ 1203  oc apply -f resources/subscription.yml 
+ 1204  oc get pods
+ 1206  oc get operatorgroup
+ 1207  oc get subscriptions
+ 1209  oc get csv
+ 1210  oc get csv -o name
+ 1211  export CSV_NAME=$(oc get csv -o name)
+ 1212  echo $CSV_NAME
+ 1215  oc get ${CSV_NAME} -o jsonpath='{.spec.customresourcedefinitions.owned[*].kind}{"\n"}'
+ 1220  vi resources/localvolume.yml 
+ 1221  oc create -f resources/localvolume.yml 
+ 1237  oc get pods
+ 1238  oc get localvolumes
+ 1239  oc get persistentvolumes
+ 1240  oc get persistentvolumes -o wide
+

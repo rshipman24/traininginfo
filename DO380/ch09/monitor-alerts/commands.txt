@@ -1,0 +1,19 @@
+ 1263  cd ~
+ 1264  lab monitor-alerts start
+ 1265  oc whoami
+ 1266  oc extract secret/alertmanager-main --to /tmp/ -n openshift-monitoring --confirm
+ 1267  cat /tmp/alertmanager.yaml 
+ 1268  sed -i 's/"//g' /tmp/alertmanager.yaml 
+ 1270  vi /tmp/alertmanager.yaml 
+ 1284  oc logs -f -c alertmanager alertmanager-main-0 -n openshift-monitoring
+ 1299  diff ~/DO380/solutions/monitor-alerts/alertmanager.yaml /tmp/alertmanager.yaml 
+ 1301  oc set data secret/alertmanager-main -n openshift-monitoring --from-file /tmp/alertmanager.yaml 
+ 1302  oc logs -f -c alertmanager alertmanager-main-0 -n openshift-monitoring
+	....
+	REVIEW ALERTS FROM THE CONSOLE
+        ....
+ 1304  ssh lab@utility.lab.example.com 
+ 1308  sed -i 's/warning/critical/' /tmp/alertmanager.yaml 
+ 1309  oc set data secret/alertmanager-main -n openshift-monitoring --from-file /tmp/alertmanager.yaml 
+ 1310  ssh lab@utility.lab.example.com 
+

@@ -1,0 +1,52 @@
+ 1085  cd ~/DO380/labs/storage-block/iscsi/
+ 1087  cat site.yml 
+ 1088  ansible-playbook site.yml 
+ 1089  cd ~/DO380/labs/storage-block/PVs/
+ 1091  cat iscsi_pv_00.yml 
+ 1092  oc get sc
+ 1094  oc apply -k ~/DO380/labs/storage-block/PVs/
+ 1095  oc get sc
+ 1098  oc new-project storage-block
+ 1100  limit1="requests.storage=6G"
+ 1101  limit2="persistentvolumeclaims=2"
+ 1102  sclass="iscsi-blk.storageclass.storage.k8s.io"
+ 1103  limit3="${sclass}/persistentvolumeclaims=1"
+ 1107  oc create quota storage --hard=${limit1},${limit2},${limit3}
+ 1108  oc describe quota storage
+ 1109  oc policy add-role-to-user admin developer
+ 1110  oc login -u developer -p developer
+ 1111  oc get persistentvolumes
+ 1112  oc get sc
+ 1113  oc describe quota storage
+ 1114  cd ~/DO380/labs/storage-block/test-db/
+ 1116  cat postgres/statefulset.yml 
+ 1117  vi postgres/statefulset.yml 
+          ....
+          spec:
+            storageClassName: iscsi-blk
+            accessMode: [ "ReadWriteOnce" ]
+          ....
+ 1118  oc apply -k postgres/
+ 1119  oc get pvc
+ 1121  oc describe quota storage
+ 1122  cd ~/DO380/labs/storage-block/PVs/
+ 1123  cat storageclass.yml 
+ 1125  oc login -u admin
+ 1126  oc create -f storageclass.yml 
+ 1127  oc login -u developer
+ 1128  oc project storage-block
+ 1129  oc get sc
+ 1130  cd ~/DO380/labs/storage-block/test-db/
+ 1132  oc apply -k init_job/
+ 1133  oc get pods
+ 1134  ./get_all.sh 
+ 1135  oc apply -k backup_job/
+ 1136  oc get pods
+ 1137  ./get_all.sh 
+ 1138  oc apply -k restore_job/
+ 1139  oc get pods
+ 1140  ./get_all.sh 
+ 1141  oc get pods
+ 1142  ./get_all.sh 
+ 1146  cd ~
+

@@ -1,0 +1,37 @@
+ 1020  lab storage-file start
+ 1021  oc whoami
+ 1022  oc new-project storage-file
+ 1024  oc create quota storage --hard=requests.storage=5G,persistentvolumeclaims=3
+ 1025  oc policy add-role-to-user admin developer
+ 1027  cd ~/DO380/labs/storage-file/
+ 1036  oc login -u developer -p developer
+ 1037  oc project storage-file
+ 1038  cat resources/httpd/pvc.yml 
+ 1039  oc apply -f resources/httpd/pvc.yml 
+ 1040  oc get pvc
+ 1041  oc describe pvc photo-share
+ 1042  oc get sc
+ 1043  vi resources/httpd/pvc.yml 
+	....
+        accessModes:
+          - ReadWriteMany
+        storageClassName: nfs-storage
+        resources:
+        ....
+ 1044  oc delete pvc photo-share 
+ 1047  oc apply -f resources/httpd/pvc.yml 
+ 1048  oc get pvc
+ 1049  cd resources/httpd/
+ 1052  oc apply -k resources/httpd/
+ 1053  oc apply -k resources/redis/
+ 1054  oc get pods
+ 1055  ./simulate_activity.sh 
+ 1056  oc get routes
+ 1057  oc apply -k resources/backend/
+ 1058  oc get pods
+ 1061  oc logs worker-8n4m2 | grep -i "Working on" | wc -l
+ 1067  oc login -u admin -p redhat
+ 1068  oc get sc nfs-storage -o yaml
+ 1069  cat set-default-storageclass.yml 
+ 1070  oc patch sc nfs-storage -p "$(cat set-default-storageclass.yml)"
+ 1071  oc get sc

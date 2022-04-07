@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: iscsi-pv-06
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  storageClassName: iscsi-blk
+  accessModes:
+    - ReadWriteOnce
+  iscsi:
+     targetPortal: 172.25.250.253:3260
+     iqn: iqn.2020-06.com.example:utility.lab.example.com
+     lun: 6
+     initiatorName: iqn.2020-06.com.example:openshift
+     fsType: 'ext4'
+     readOnly: false

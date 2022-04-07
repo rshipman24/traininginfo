@@ -1,0 +1,26 @@
+  939  curl -v -k https://console-openshift-console.apps.ocp4.example.com 2>&1 | grep -E 'date|expired'
+  940  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+  945  oc get proxy/cluster -o jsonpath='{.spec.trustedCA.name}{"\n"}'
+  946  oc extract configmap/wildcard-bundle -n openshift-config --to ./ --confirm
+  947  openssl x509 -in ca-bundle.crt -noout -subject -issuer -dates -serial
+  948  oc get ingresscontroller/default -n openshift-ingress-operator -o jsonpath='{.spec.defaultCertificate.name}{"\n"}'
+  950  oc extract secret/wildcard-tls -n openshift-ingress --to ./ --confirm
+  951  openssl x509 -in tls.crt -noout -subject -issuer -dates -serial
+  953  ./renew_wildcard.sh 
+  954  openssl x509 -in wildcard-combined.pem -noout -subject -issuer -dates -serial
+  955  oc set data secret/wildcard-tls -n openshift-ingress --from-file tls.crt=wildcard-combined.pem --from-file tls.key=wildcard-key.pem 
+  956  curl -v -k https://console-openshift-console.apps.ocp4.example.com 2>&1 | grep -w date
+  960  rm -rf ~/.kube/
+  976  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+  977  oc get apiserver/cluster -o yaml | tail
+  978  oc extract secret/api-tls -n openshift-config --to ./ --confirm
+  979  openssl x509 -in tls.crt -noout -subject -issuer -dates -serial
+  980  ./renew_api.sh 
+  981  ls *.pem | grep -v key
+  982  openssl x509 -in api-combined.pem -noout -subject -issuer -dates -serial
+  983  oc set data secret/api-tls -n openshift-config --from-file tls.crt=api-combined.pem --from-file tls.key=api-key.pem
+  984  oc get events -n openshift-kube-apiserver --sort-by='.lastTimestamp' | tail
+  985  curl -v -k https://api.ocp4.example.com 2>&1 | grep -w date
+  986  rm -rf ~/.kube/
+  987  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+
