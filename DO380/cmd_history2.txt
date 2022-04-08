@@ -1,0 +1,389 @@
+    1  ls -lrt
+    2  exit
+    3  ls -lrt
+    4  ls -lrta
+    5  exit
+    6  exit
+    7  lab k8s-deploy start
+    8  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+    9  cd ~/DO380/labs/k8s-deploy/
+   10  ls
+   11  cat hello.yml 
+   12  cat ns-and-rbac.yml 
+   13  mkdir ~/uploads
+   14  ls
+   15  cp hello.yml ~/uploads/
+   16  cp ns-and-rbac.yml ~/uploads/
+   17  cd base/
+   18  ls
+   19  cd ..
+   20  cp * ~/uploads/
+   21  cp -r * ~/uploads/
+   22  kubectl create -f ns-and-rbac.yml 
+   23  oc login -u developer -p developer
+   24  pwd
+   25  kubectl apply -f hello.yml 
+   26  kubectl get ingress
+   27  curl hello.apps.ocp4.example.com
+   28  oc login -u admin -p redhat
+   29  kubectl create namespace k8s-deploy-prod
+   30  ls
+   31  cat overlays/prod/
+   32  ls -l overlays/prod/
+   33  cat overlays/prod/kustomization.yml 
+   34  ls
+   35  ls -l base/
+   36  cat base/hello.yml 
+   37  ls
+   38  ls -l base/
+   39  cat base/kustomization.yml 
+   40  kubectl apply -k overlays/prod
+   41  kubectl get ingress
+   42  oc project
+   43  kubectl get ingress -n k8s-deploy-prod
+   44  curl deploying-practice.apps.ocp4.example.com
+   45  vi overlays/prod/kustomization.yml 
+   46  kubectl apply -k overlays/prod
+   47  curl deploying-practice.apps.ocp4.example.com
+   48  cd ~
+   49  lab k8s-deploy finish 
+   50  df -h
+   51  ls
+   52  cd uploads
+   53  ls
+   54  mkdir ch01
+   55  mv base ch01/
+   56  ls
+   57  mv hello.yml ch01/
+   58  mv ns-and-rbac.yml ch01/
+   59  mv overlays ch01/
+   60  ls
+   61  ch ch01
+   62  cd ch01/
+   63  ls -lr
+   64  ls -lR
+   65  ls
+   66  lab k8s-optimize start
+   67  oc whoami
+   68  oc get deployments,pods,services
+   69  oc project k8s-optimize
+   70  oc get deployments,pods,services
+   71  oc get ingress
+   72  oc get deployment/hello -o jason | jq '.spec.template.spec.containers[0].image'
+   73  oc get deployment/hello -o json | jq '.spec.template.spec.containers[0].image'
+   74  ~/DO380/labs/k8s-optimize/watch.sh 
+   75  lab automation-resources start
+   76  oc whoami
+   77  oc get route -n openshift-console console
+   78  oc get route -n openshift-console console -o jsonpath='{.spec.host}'
+   79  console=$(oc get route -n openshift-console console -o jsonpath='{.spec.host}')
+   80  echo "console=$(oc get route -n openshift-console console -o jsonpath='{.spec.host}')" >> automation-resource-commands_ch01.txt
+   81  echo $console
+   82  curl https://$console -k -v 2>&1 | grep 'expire date'
+   83  echo "curl https://$console -k -v 2>&1 | grep 'expire date'" >> automation-resource-commands_ch01.txt 
+   84  echo "hosts=$(oc get route -A -o jsonpath='{.items[*].spec.host}')" >> automation-resource-commands_ch01.txt 
+   85  hosts=$(oc get route -A -o jsonpath='{.items[*].spec.host}')
+   86  for host in $host; do curl https://$host -k -w "%{url_effective} %{http_code}\n" -o /dev/null -s ; done
+   87  for host in $host ; do curl https://$host -k -w "%{url_effective} %{http_code}\n" -o /dev/null -s ; done
+   88  for host in $hosts ; do curl https://$host -k -w "%{url_effective} %{http_code}\n" -o /dev/null -s ; done
+   89  echo "for host in $hosts ; do curl https://$host -k -w "%{url_effective} %{http_code}\n" -o /dev/null -s ; done" >> automation-resource-commands_ch01.txt 
+   90  oc get oauth cluster -o json
+   91  filter='?(.name=="htpasswd_provider")'
+   92  echo "filter='?(.name=="htpasswd_provider")'" >> automation-resource-commands_ch01.txt 
+   93  oc get oauth cluster -o jsonpath="{.spec.identityProvider[$filter].htpasswd.fileData.name}{'\n}"
+   94  oc get oauth cluster -o jsonpath="{.spec.identityProvider[$filter].htpasswd.fileData.name}{'\n'}"
+   95  oc get oauth cluster -o jsonpath="{.spec.identityProviders[$filter].htpasswd.fileData.name}{'\n'}"
+   96  echo "oc get oauth cluster -o jsonpath="{.spec.identityProviders[$filter].htpasswd.fileData.name}{'\n'}"" >> automation-resource-commands_ch01.txt 
+   97  vi get-users.sh
+   98  chmod +x get-users.sh
+   99  ./get-users.sh 
+  100  cp get-users.sh add-users.sh
+  101  vi add-users.sh 
+  102  cat ~/DO380/labs/automation-resources/add-user.sh 
+  103  cp ~/DO380/labs/automation-resources/add-user.sh .
+  104  ls
+  105  mv image_trigger_commands image_trigger_commands_ch01.txt
+  106  ls
+  107  cat add-users.sh 
+  108  rm add-users.sh 
+  109  ls
+  110  ./add-user.sh user1 user2
+  111  oc login -u -p user1
+  112  oc login -u user1 -p user1
+  113  oc login -u user1 -p user2
+  114  vi add-user.sh 
+  115  ./add-user.sh user2 user2
+  116  vi add-user.sh 
+  117  oc whoami
+  118  oc login -u admin -p redhat
+  119  ./add-user.sh user2 user2
+  120  oc whoami
+  121  vi add-user.sh 
+  122  cd ~
+  123  lab automation-resources finish
+  124  ls
+  125  cd uploads/
+  126  ls
+  127  cp image_trigger_commands_ch01 ch01/
+  128  mv image_trigger_commands_ch01 ch01/
+  129  ls
+  130  mkdir ch02
+  131  ls
+  132  cd ch01
+  133  ls
+  134  mv automation-resource-commands_ch01.txt automation-resource-commands_ch02.txt 
+  135  ls
+  136  mv add-user.sh ../ch02/
+  137  mv get-users.sh ../ch02/
+  138  ls
+  139  mv automation-resource-commands_ch02.txt ../ch02/
+  140  ls
+  141  cat image_trigger_commands_ch01
+  142  cat image_trigger_commands_ch01.txt 
+  143  ls
+  144  rm image_trigger_commands_ch01.txt
+  145  ls
+  146  cd ..
+  147  ls
+  148  cd ch02
+  149  ls
+  150  cat automation-resource-commands_ch02.txt 
+  151  vi automation-resource-commands_ch02.txt 
+  152  ls
+  153  oc whoami
+  154  lab automation-scripts start
+  155  ls -l ~/DO380/labs/automation-scripts/
+  156  ls
+  157  mkdir automation-scripts
+  158  cd automation-scripts/
+  159  cp -pr ~/DO380/labs/automation-scripts/* .
+  160  ls
+  161  cat audit.sh 
+  162  ./audit.sh 
+  163  oc new-project automation-scripts
+  164  ls
+  165  cat rbac.yml 
+  166  oc create -f rbac.yml 
+  167  oc whoami
+  168  vi rbac.yml 
+  169  oc create -f rbac.yml 
+  170  ls
+  171  cat job.yml 
+  172  oc create -f job.yml 
+  173  vi job.yml 
+  174  oc create -f job.yml 
+  175  oc get jobs
+  176  oc logs jobs/audit-sh
+  177  ls
+  178  cat cronjob.yml 
+  179  cat job.yml 
+  180  vi cronjob.yml 
+  181  oc create -f cronjob.yml 
+  182  oc get cronjob.batch/audit-cron
+  183  watch oc get cronjobs,jobs,pods
+  184  ls
+  185  cd ~
+  186  lab automation-scripts finish
+  187  ls
+  188  cd uploads/
+  189  ls
+  190  cd ch02
+  191  ls
+  192  mkdir automation-resource
+  193  mv add-user.sh automation-resource-commands_ch02.txt automation-resource/
+  194  ls
+  195  mv get-users.sh automation-resource/
+  196  ls
+  197  mkdir openshift-api
+  198  cd openshift-api/
+  199  ls
+  200  lab automation-rest start
+  201  curl -k https://api.ocp4.example.com:6443/api
+  202  oc get route openshift-authentication
+  203  oc get route -n openshift-authentication
+  204  OAUTH_HOST=$(oc get route oauth-openshift -n openshift-authentication -o jsonpath='{.spec.host}')
+  205  echo $OAUTH_HOST
+  206  curl -u admin -kv "https://$OAUTH_HOST/oauth/authorize?client_id=openshift-challenging-client&response_type=token"
+  207  oc whoami -t
+  208  TOKEN=sha256~t8KPlTv1RYj-2KQqcukH92nEWUlreqrQQZQj5daHFSM
+  209  HEADER="Authorization: Bearer $TOKEN"
+  210  curl -k --header "$HEADER -X GET https://api.ocp4.example.com:6443/api"
+  211  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/api
+  212  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/api/v1
+  213  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/api/v1/pods
+  214  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/api/v1/pods | jq ".items[].metadata.name"
+  215   oc explain routes
+  216  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/apis/route.openshift.io/v1
+  217  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/apis/route.openshift.io/v1 | jq "'items[].mspec.host'
+  218  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/apis/route.openshift.io/v1 | jq 'items[].mspec.host'
+  219  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/apis/route.openshift.io/v1 | jq '.items[].mspec.host'
+  220  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/apis/route.openshift.io/v1 | jq '.items[].spec.host'
+  221  curl -k --header "$HEADER" -X GET https://api.ocp4.example.com:6443/apis/route.openshift.io/v1/routes | jq '.items[].spec.host'
+  222  lab automation-rest finish
+  223  history
+  224  ls
+  225  vi automation-rest_commands
+  226  ls
+  227  pwd
+  228  cd ..
+  229  ls
+  230  mkdir automation-ansible
+  231  cd automation-ansible/
+  232  ls
+  233  lab automation-ansible start
+  234  history
+  235  ls -l ~/DO380/labs/automation-ansible/
+  236  cp ~/DO380/labs/automation-ansible/* .
+  237  ls -l
+  238  cat hello.yml 
+  239  ls
+  240  cat k8s.yml 
+  241  vi k8s.yml 
+  242  cat ~/DO380/solutions/automation-ansible/k8s.yml 
+  243  ls
+  244  cat k8s.yml 
+  245  vi k8s.yml 
+  246  oc login -u developer -p developer
+  247  ansible-playbook -v k8s.yml --dry-run
+  248  ansible-playbook -v k8s.yml --check
+  249  vi k8s.yml 
+  250  ansible-playbook -v k8s.yml --check
+  251  ls
+  252  ls -l
+  253  ls -l ~/DO380/labs/automation-ansible/
+  254  vi k8s.yml 
+  255  ansible-playbook -v k8s.yml --check
+  256  ansible-playbook -v k8s.yml
+  257  oc project automation-ansible
+  258  oc get all
+  259  ls
+  260  lab automation-ansible finish
+  261  pwdd
+  262  powd
+  263  pwd
+  264  cd ~/uploads/
+  265  ls
+  266  mkdir ch03
+  267  cd ch03
+  268  ls
+  269  oc get csv
+  270  oc login -u admin -p redhat
+  271  oc get csv
+  272  oc get csv -A
+  273  oc describe csv
+  274  oc explain csv
+  275  oc get subs -A
+  276  lab operators-install
+  277  lab operators-install start
+  278  mkdir operator-install
+  279  cd operator-install/
+  280  vi file-integrity-operator-namespace.yaml
+  281  oc apply -f file-integrity-operator-namespace.yaml 
+  282  oc project openshift-file-integrity
+  283  vi file-integrity-operator-group.yaml
+  284  oc apply -f file-integrity-operator-group.yaml 
+  285  vi file-integrity-operator-subscription.yaml
+  286  oc apply -f file-integrity-operator-subscription.yaml 
+  287  oc get all
+  288  oc get subs
+  289  oc get operatorgroup
+  290  oc get oc describe file-integrity-operator-sub
+  291  oc describe file-integrity-operator-sub
+  292  oc describe sub file-integrity-operator-sub
+  293  oc get csv
+  294  oc describe csv file-integrity-operator.v0.1.13
+  295  ls
+  296  vi file-integrity-operator-group.yaml 
+  297  ls
+  298  vi file-integrity-operator-subscription.yaml 
+  299  oc describe sub file-integrity-operator-sub
+  300  oc get csv
+  301  ls -l ~/DO380/solutions/
+  302  ls -lR ~/DO380/solutions/
+  303  ls
+  304  vi file-integrity-operator-group.yaml 
+  305  s
+  306  ls
+  307  vi file-integrity-operator-subscription.yaml 
+  308  oc describe sub file-integrity-operator-sub
+  309  oc get csv
+  310  oc get csv file-integrity-operator.v0.1.13 -o yaml
+  311  vi file-integrity-operator-group.yaml 
+  312  oc get operatorgroup
+  313  oc delete operatorgroup file-integrity-operator
+  314  oc apply -f file-integrity-operator-group.yaml 
+  315  oc get subs
+  316  oc delete sub file-integrity-operator-sub
+  317  oc apply -f file-integrity-operator-subscription.yaml 
+  318  oc get csv
+  319  history
+  320  vi commands.txt
+  321  ls
+  322  cd ..
+  323  ls
+  324  lap operator-install finish
+  325  lab operator-install finish
+  326  lab operators-install finish
+  327  pwd
+  328  ls
+  329  mkdir operators-cluster
+  330  cd operators-cluster/
+  331  lab operators-cluster start
+  332  VAR="$(oc get clusterversion version -o jsonpath='{.status.desired.image}')"
+  333  oc adm release extract --from=$VER --to=release-image
+  334  ls -l
+  335  cd release-image/
+  336  ls
+  337  cd ..
+  338  ls release-image/*samples*
+  339  less release-image/*samples*06-operator.yaml
+  340  oc get pods -n openshift-cluster-samples-operator
+  341  oc logs pod/cluster-samples-operator-848dc4847-c7ktx -n openshift-cluster-samples-operator --all-containers
+  342  history
+  343  vi commands.txt
+  344  ls
+  345  lab operators-cluster finish
+  346  ls
+  347  ls -lh
+  348  rm -rf release-image/
+  349  ls
+  350  cd ..
+  351  ls
+  352  cd ..
+  353  ls
+  354  ls -ltr
+  355  ls -ltR
+  356  cd ..
+  357  ls
+  358  git status
+  359  cd ~
+  360  git status
+  361  cd ~
+  362  ls
+  363  cd DO380/
+  364  ls
+  365  cd ..
+  366  cd uploads/
+  367  ls
+  368  s
+  369  ls
+  370  cat token 
+  371  echo "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" > token 
+  372  cat token
+  373  ls
+  374  cd ..
+  375  ls
+  376  cat token 
+  377  history | grep git
+  378  history | grep lab
+  379  lab certificates-app-trust finish
+  380  ls
+  381  history
+  382  pwd
+  383  ls
+  384  cd uploads/
+  385  ls
+  386  cd DO380/
+  387  ls
+  388  touch cmd_history2.txt 
+  389  history > cmd_history2.txt 

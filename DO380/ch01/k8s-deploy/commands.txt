@@ -1,0 +1,29 @@
+   8  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+    9  cd ~/DO380/labs/k8s-deploy/
+   11  cat hello.yml 
+   12  cat ns-and-rbac.yml 
+   13  mkdir ~/uploads
+   15  cp hello.yml ~/uploads/
+   16  cp ns-and-rbac.yml ~/uploads/
+   17  cd base/
+   22  kubectl create -f ns-and-rbac.yml 
+   23  oc login -u developer -p developer
+   25  kubectl apply -f hello.yml 
+   26  kubectl get ingress
+   27  curl hello.apps.ocp4.example.com
+   28  oc login -u admin -p redhat
+   29  kubectl create namespace k8s-deploy-prod
+   31  cat overlays/prod/
+   32  ls -l overlays/prod/
+   33  cat overlays/prod/kustomization.yml 
+   39  cat base/kustomization.yml 
+   40  kubectl apply -k overlays/prod
+   41  kubectl get ingress
+   42  oc project
+   43  kubectl get ingress -n k8s-deploy-prod
+   44  curl deploying-practice.apps.ocp4.example.com
+   45  vi overlays/prod/kustomization.yml 
+   46  kubectl apply -k overlays/prod
+   47  curl deploying-practice.apps.ocp4.example.com
+   48  cd ~
+

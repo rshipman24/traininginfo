@@ -1,0 +1,1000 @@
+  750  oc get co/kube-apiserver
+  751  oc logout
+  752  rm -rf ~/.kube/
+  753  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+  754  cd ~/DO380/labs/certificates-enterprise-ca/
+  755  ls
+  756  echo "START HERE"
+  757  openssl x509 -in wildcard-api.pem -noout -subject -issuer -ext 'subjectAltName' -dates
+  758  cat wildcard-api.pem /etc/pki/tls/certs/classroom-ca.pem > combined-cert.pem
+  759  oc whoami
+  760  oc delete secret custom-tls -n openshift-config
+  761  oc create secret tls custom-tls --cert combined-cert.pem --key wildcard-api-key.pem -n openshift-config
+  762  vi apiserver-cluster.yaml 
+  763  oc apply -f apiserver-cluster.yaml 
+  764  watch oc get clusteroperator/kube-apiserver
+  765  oc get pods -n kube-apiserver
+  766  oc get pods -n openshift-kube-apiserver
+  767  oc delete pod kube-apiserver-master01 kube-apiserver-master02
+  768  oc delete pod kube-apiserver-master01 kube-apiserver-master02 -n openshift-kube-apiserver
+  769  watch oc get clusteroperator/kube-apiserver
+  770  oc get pods -n openshift-kube-apiserver
+  771  curl -v https://console-openshift-console.apps.ocp4.example.com
+  772  curl -v https://console-openshift-console.apps.ocp4.example.com | more
+  773  curl -kv https://console-openshift-console.apps.ocp4.example.com
+  774  curl -kv https://console-openshift-console.apps.ocp4.example.com | more
+  775  clear
+  776  cd ~
+  777  lab certificates-enterprise-ca restart
+  778  lab certificates-enterprise-ca finish
+  779  lab certificates-enterprise-ca start
+  780  cd ~/DO380/labs/certificates-enterprise-ca/
+  781  ls
+  782  openssl x509 -in wildcard-api.pem -noout -subject -issuer -ext 'subjectAltName' -dates
+  783  cat wildcard-api.pem 
+  784  cat wildcard-api.pem /etc/pki/tls/certs/classroom-ca.pem 
+  785  cat wildcard-api.pem /etc/pki/tls/certs/classroom-ca.pem > combined-cert.pem
+  786  cat combined-cert.pem 
+  787  ls
+  788  pwd
+  789  ls
+  790  cd ..
+  791  ls
+  792  cd ..
+  793  ls
+  794  cd solutions/
+  795  ls
+  796  cd certificates-enterprise-ca/
+  797  ls
+  798  cat apiserver-cluster.yaml 
+  799  cd ../../labs/certificates-enterprise-ca/
+  800  cat ../../solutions/certificates-enterprise-ca/apiserver-cluster.yaml 
+  801  cat apiserver-cluster.yaml 
+  802  vi apiserver-cluster.yaml 
+  803  diff ../../solutions/certificates-enterprise-ca/apiserver-cluster.yaml apiserver-cluster.yaml 
+  804  vi apiserver-cluster.yaml 
+  805  diff ../../solutions/certificates-enterprise-ca/apiserver-cluster.yaml apiserver-cluster.yaml 
+  806  oc apply -f apiserver-cluster.yaml 
+  807  watch oc get clusteroperator/kube-apiserver
+  808  oc create configmap combined-certs --from-file ca-bundle.crt=combined-cert.pem -n openshift-config
+  809  oc delete configmap combined-certs -n openshift-config
+  810  oc create configmap combined-certs --from-file ca-bundle.crt=combined-cert.pem -n openshift-config
+  811  vi proxy-cluster.yaml 
+  812  diff ../../solutions/certificates-enterprise-ca/proxy-cluster.yaml proxy-cluster.yaml 
+  813  oc apply -f proxy-cluster.yaml 
+  814  oc create secret tls custom-tls-bundle --cert combined-cert.pem --key wildcard-api-key.pem -n opensift-ingress
+  815  oc create secret tls custom-tls-bundle --cert combined-cert.pem --key wildcard-api-key.pem -n openshift-ingress
+  816  oc secret delete custom-tls-bundle -n openshift-ingress
+  817  oc delete secret custom-tls-bundle -n openshift-ingress
+  818  oc create secret tls custom-tls-bundle --cert combined-cert.pem --key wildcard-api-key.pem -n openshift-ingress
+  819  vi ingresscontrollers.yaml 
+  820  diff ../../solutions/certificates-enterprise-ca/ingresscontrollers.yaml ingresscontrollers.yaml 
+  821  oc apply -f ingresscontrollers.yaml 
+  822  cd 
+  823  watch oc get pods -n openshift-ingress
+  824  oc whoami --show-console
+  825  oc get co/kube-apiserver
+  826  watch "oc get co/kube-apiserver; oc get pods -l app=openshift-kube-apiserver -n openshift-kube-apiserver"
+  827  openssl x509 -in wildcard-api.pem -noout -subject -issuer -ext 'subjectAltName' -dates
+  828  pwd
+  829  cd DO380/labs/certificates-enterprise-ca/
+  830  openssl x509 -in wildcard-api.pem -noout -subject -issuer -ext 'subjectAltName' -dates
+  831  oc whoami --show-console
+  832  cat wildcard-api.pem 
+  833  cat /etc/pki/tls/certs/classroom-ca.pem 
+  834  cat combined-cert.pem | more
+  835  oc get secret custom-tls -n openshift-config
+  836  oc get secret custom-tls -n openshift-config -o yaml
+  837  oc get apiserver
+  838  oc get apiserver -o yaml
+  839  oc describe apiserver 
+  840  oc get proxy
+  841  oc describe proxy cluster
+  842  oc get ingresscontroler
+  843  occc get ingresscontroller
+  844  oc get ingresscontrollller
+  845  oc get ingress
+  846  oc get ingresscontroller
+  847  oc get ingresscontrollers
+  848  oc get ingresscontrollers -n openshift-ingress-operator
+  849  oc describe ingresscontroller default -n openshift-ingress-operator
+  850  history
+  851  ls
+  852  pwd
+  853  cd ../..
+  854  ls
+  855  cd ../uploads/DO380/ch06/certificate-enterprise-ca/
+  856  ls
+  857  vi commands.txt
+  858  lab certificates-enterprise-ca finish
+  859  pwd
+  860  ls -l
+  861  cd ..
+  862  ls
+  863  cd ..
+  864  ls
+  865  cd ch06/
+  866  ls
+  867  mkdir certificates-app-trust
+  868  lab certificates-app-trust start
+  869  oc whoami
+  870  oc get proxy/cluster -o yaml
+  871  oc get configmap combined-certs -n openshift-config -o jsonpath='{.data.*} | grep Classroom
+  872  oc get configmap combined-certs -n openshift-config -o jsonpath='{.data.*}' | grep Classroom
+  873  oc new-project certificates-app-trust
+  874  oc new-app --name hello1 --docker-image quay.io/redhattraining/hello-world-nginx:v1.0
+  875  oc create route edge --service hello1 --hostname hello1-trust.apps.ocp4.example.com
+  876  oc new-app --name hello2 --docker-image quay.io/redhattraining/hello-world-nginx:v1.0
+  877  oc create route edge --service hello2 --hostname hello2-trust.apps.ocp4.example.com
+  878  oc get routes
+  879  curl hello1-trust.apps.ocp4.example.com
+  880  curl https://hello1-trust.apps.ocp4.example.com
+  881  curl https://hello2-trust.apps.ocp4.example.com
+  882  oc get deployments
+  883  oc exec -it deployment/hello1 -- /bin/bash
+  884  oc create configmap ca-certs
+  885  oc label configmap ca-certs config.openshift.io/inject-trusted-cabundle=true
+  886  oc get configmap ca-certs -o yaml | head -n 6
+  887  oc set volume deployment/hello1 -t configmap --name trusted-ca --add --read-only=true --mount-path /etc/pki/ca-trust/extracted/pem --configmap-name ca-certs
+  888  oc edit deployment/hello1
+  889  oc get pods
+  890  oc get routes -l app=hello2
+  891  oc exec -it deployment/hello01 -- /bin/bash
+  892  oc exec -it deployment/hello1 -- /bin/bash
+  893  oc delete project certificates-app-trust 
+  894  ls
+  895  cd certificates-app-trust/
+  896  history
+  897  vi commands.txt
+  898  cat commands.txt 
+  899  ls
+  900  cd ..
+  901  ls
+  902  cd ..
+  903  ls
+  904  cd ..
+  905  ls
+  906  pwd
+  907  cd ..
+  908  ls
+  909  git clone https://github.com/rshipman24/traininginfo.git
+  910  ls
+  911  cd traininginfo/
+  912  ls
+  913  cd DO380/
+  914  ls
+  915  cp -r ../../uploads/DO380/* .
+  916  ls
+  917  git add -A
+  918  git status
+  919  git commit -m 'additional training notes'
+  920  git push
+  921  ls
+  922  cd ch06
+  923  ls
+  924  pwd
+  925  cd ~/uploads/
+  926  ls
+  927  cd DO380/
+  928  ls
+  929  cd ch06
+  930  ls
+  931  mkdir certificates-troubleshoot
+  932  lab certificates-troubleshoot start
+  933  oc whoami
+  934  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+  935  lab certificates-troubleshoot finish
+  936  lab certificates-troubleshoot start
+  937  lab certificates-troubleshoot finish
+  938  lab certificates-troubleshoot start
+  939  curl -v -k https://console-openshift-console.apps.ocp4.example.com 2>&1 | grep -E 'date|expired'
+  940  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+  941  cd ~/DO380/labs/certificates-troubleshoot/
+  942  ls
+  943  cp * ~/uploads/DO380/ch06/certificates-troubleshoot/
+  944  ls
+  945  oc get proxy/cluster -o jsonpath='{.spec.trustedCA.name}{"\n"}'
+  946  oc extract configmap/wildcard-bundle -n openshift-config --to ./ --confirm
+  947  openssl x509 -in ca-bundle.crt -noout -subject -issuer -dates -serial
+  948  oc get ingresscontroller/default -n openshift-ingress-operator -o jsonpath='{.spec.defaultCertificate.name}{"\n"}'
+  949  openssl x509 -in tls.crt -noout -subject -issuer -dates -serial
+  950  oc extract secret/wildcard-tls -n openshift-ingress --to ./ --confirm
+  951  openssl x509 -in tls.crt -noout -subject -issuer -dates -serial
+  952  ls
+  953  ./renew_wildcard.sh 
+  954  openssl x509 -in wildcard-combined.pem -noout -subject -issuer -dates -serial
+  955  oc set data secret/wildcard-tls -n openshift-ingress --from-file tls.crt=wildcard-combined.pem --from-file tls.key=wildcard-key.pem 
+  956  curl -v -k https://console-openshift-console.apps.ocp4.example.com 2>&1 | grep -w date
+  957  oc get co | grep kube
+  958  watch oc get co kube-apiserver
+  959  curl -v -k https://console-openshift-console.apps.ocp4.example.com 2>&1 | grep -w date
+  960  rm -rf ~/.kube/
+  961  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+  962  oc get routes -A | grep console
+  963  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+  964  oc get routes -A | grep console
+  965  oc get pods -n openshift-console
+  966  oc delete pod console-747d49b8bc-n96kx -n openshift-console
+  967  oc get pods -n openshift-console
+  968  oc delete pod console-747d49b8bc-qjgw7 -n openshift-console
+  969  oc get pods -n openshift-console
+  970  oc logout
+  971  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+  972  oc logout
+  973  ls
+  974  ls -al
+  975  oc get apiserver/cluster -o yaml | tail
+  976  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+  977  oc get apiserver/cluster -o yaml | tail
+  978  oc extract secret/api-tls -n openshift-config --to ./ --confirm
+  979  openssl x509 -in tls.crt -noout -subject -issuer -dates -serial
+  980  ./renew_api.sh 
+  981  ls *.pem | grep -v key
+  982  openssl x509 -in api-combined.pem -noout -subject -issuer -dates -serial
+  983  oc set data secret/api-tls -n openshift-config --from-file tls.crt=api-combined.pem --from-file tls.key=api-key.pem
+  984  oc get events -n openshift-kube-apiserver --sort-by='.lastTimestamp' | tail
+  985  curl -v -k https://api.ocp4.example.com 2>&1 | grep -w date
+  986  rm -rf ~/.kube/
+  987  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+  988  ls
+  989  pwd
+  990  cd ~/uploads/DO380/ch06/certificates-troubleshoot/
+  991  ls
+  992  history 100
+  993  vi commands.txt
+  994  ls
+  995  cd ..
+  996  ls
+  997  cd ..
+  998  ls
+  999  mkdir ch08
+ 1000  ls
+ 1001  cd ch08
+ 1002  mkdir storage-file
+ 1003  cd ~
+ 1004  lab certificates-troubleshoot finish
+ 1005  lab storage-file start
+ 1006  lab storage-file finish
+ 1007  lab storage-file start
+ 1008  watch oc get co/kube-apiserver
+ 1009  oc describe co/kube-apiserver
+ 1010  watch oc get co/kube-apiserver
+ 1011  oc logout
+ 1012  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+ 1013  watch oc get co/kube-apiserver
+ 1014  oc describe co/kube-apiserver
+ 1015  oc events co/kube-apiserver
+ 1016  oc get events co/kube-apiserver
+ 1017  oc get events -n openshift-kube-apiserver --sort-by='.lastTimestamp' 
+ 1018  oc get events -n openshift-kube-apiserver --sort-by='.lastTimestamp' | tail
+ 1019  oc get co/kube-apiserver
+ 1020  lab storage-file start
+ 1021  oc whoami
+ 1022  oc new-project storage-file
+ 1023  oc create quota storage --hard=request.storage=5G,persistentvolumeclaims=3
+ 1024  oc create quota storage --hard=requests.storage=5G,persistentvolumeclaims=3
+ 1025  oc policy add-role-to-user admin developer
+ 1026  pwd
+ 1027  cd ~/DO380/labs/storage-file/
+ 1028  ls
+ 1029  cd photos/
+ 1030  ls
+ 1031  ls -l
+ 1032  ls -lh
+ 1033  cd ..
+ 1034  cp -r * ~/uploads/DO380/ch08/storage-file/
+ 1035  ls
+ 1036  oc login -u developer -p developer
+ 1037  oc project storage-file
+ 1038  cat resources/httpd/pvc.yml 
+ 1039  oc apply -f resources/httpd/pvc.yml 
+ 1040  oc get pvc
+ 1041  oc describe pvc photo-share
+ 1042  oc get sc
+ 1043  vi resources/httpd/pvc.yml 
+ 1044  oc delete pvc photo-share 
+ 1045  ov get pv
+ 1046  oc get pv
+ 1047  oc apply -f resources/httpd/pvc.yml 
+ 1048  oc get pvc
+ 1049  cd resources/httpd/
+ 1050  ls
+ 1051  cd ../..
+ 1052  oc apply -k resources/httpd/
+ 1053  oc apply -k resources/redis/
+ 1054  oc get pods
+ 1055  ./simulate_activity.sh 
+ 1056  oc get routes
+ 1057  oc apply -k resources/backend/
+ 1058  oc get pods
+ 1059  oc logs worker-8n4m2
+ 1060  oc logs worker-8n4m2 | tail
+ 1061  oc logs worker-8n4m2 | grep -i "Working on" | wc -l
+ 1062  oc logs worker-7dbpp | grep -i "Working on" | wc -l
+ 1063  oc get pods
+ 1064  oc logs worker-7dbpp | grep -i "Working on" | wc -l
+ 1065  oc logs worker-8n4m2 | grep -i "Working on" | wc -l
+ 1066  oc logs worker-mrsb4 | grep -i "Working on" | wc -l
+ 1067  oc login -u admin -p redhat
+ 1068  oc get sc nfs-storage -o yaml
+ 1069  cat set-default-storageclass.yml 
+ 1070  oc patch sc nfs-storage -p "$(cat set-default-storageclass.yml)"
+ 1071  oc get sc
+ 1072  pwdd
+ 1073  pwd
+ 1074  ls
+ 1075  cp -r * ~/uploads/DO380/ch08/storage-file/
+ 1076  cd ~/uploads/DO380/ch08/storage-file/
+ 1077  ls
+ 1078  history -50 
+ 1079  history 50 
+ 1080  history 70 
+ 1081  vi commands.txt
+ 1082  lab storage-file finish
+ 1083  lab storage-block start
+ 1084  mkdir ~/uploads/DO380/ch08/storage-block
+ 1085  cd ~/DO380/labs/storage-block/iscsi/
+ 1086  ls
+ 1087  cat site.yml 
+ 1088  ansible-playbook site.yml 
+ 1089  cd ~/DO380/labs/storage-block/PVs/
+ 1090  ls
+ 1091  cat iscsi_pv_00.yml 
+ 1092  oc get sc
+ 1093  cat kustomization.yml 
+ 1094  oc apply -k ~/DO380/labs/storage-block/PVs/
+ 1095  oc get sc
+ 1096  oc get pv
+ 1097  oc whoami
+ 1098  oc new-project storage-block
+ 1099  limit1="request.storage=6G'
+ 1100  limit1="request.storage=6G"
+ 1101  limit2="persistentvolumeclaims=2"
+ 1102  sclass="iscsi-blk.storageclass.storage.k8s.io"
+ 1103  limit3="${sclass}/persistentvolumeclaims=1"
+ 1104  oc create quota storage --hard=${limit1},${limit2},$(limit3}
+ 1105  oc create quota storage --hard=${limit1},${limit2},${limit3}
+ 1106  limit1="requests.storage=6G"
+ 1107  oc create quota storage --hard=${limit1},${limit2},${limit3}
+ 1108  oc describe quota storage
+ 1109  oc policy add-role-to-user admin developer
+ 1110  oc login -u developer -p developer
+ 1111  oc get persistentvolumes
+ 1112  oc get sc
+ 1113  oc describe quota storage
+ 1114  cd ~/DO380/labs/storage-block/test-db/
+ 1115  ls
+ 1116  cat postgres/statefulset.yml 
+ 1117  vi postgres/statefulset.yml 
+ 1118  oc apply -k postgres/
+ 1119  oc get pvc
+ 1120  oc describe quota 
+ 1121  oc describe quota storage
+ 1122  cd ~/DO380/labs/storage-block/PVs/
+ 1123  cat storageclass.yml 
+ 1124  vi storageclass.yml 
+ 1125  oc login -u admin
+ 1126  oc create -f storageclass.yml 
+ 1127  oc login -u developer
+ 1128  oc project storage-block
+ 1129  oc get sc
+ 1130  cd ~/DO380/labs/storage-block/test-db/
+ 1131  oc whoami
+ 1132  oc apply -k init_job/
+ 1133  oc get pods
+ 1134  ./get_all.sh 
+ 1135  oc apply -k backup_job/
+ 1136  oc get pods
+ 1137  ./get_all.sh 
+ 1138  oc apply -k restore_job/
+ 1139  oc get pods
+ 1140  ./get_all.sh 
+ 1141  oc get pods
+ 1142  ./get_all.sh 
+ 1143  cd
+ 1144  cp ~/DO380/labs/storage-block/* ~/uploads/DO380/ch08/storage-block/
+ 1145  cp -r ~/DO380/labs/storage-block/* ~/uploads/DO380/ch08/storage-block/
+ 1146  cd ~
+ 1147  lab storage-block finish
+ 1148  lab storage-local start
+ 1149  lab storage-local finish
+ 1150  cd ~/uploads/DO380/ch08/storage-block/
+ 1151  ls
+ 1152  history 100
+ 1153  vi commands.txt
+ 1154  ls
+ 1155  cd ..
+ 1156  ls
+ 1157  cd ..
+ 1158  ls
+ 1159  mkdir ch07
+ 1160  cd ch07
+ 1161  mkdir pools-adding-workers
+ 1162  lab pools-adding-workers start
+ 1163  ssh lab@utility
+ 1164  cd ~/DO380/labs/pools-adding-workers/
+ 1165  vi prep-utility.yml 
+ 1166  ansible-playbook prep-utility.yml
+ 1167  ssh lab@utility cat /etc/haproxy/haproxy.cfg
+ 1168  oc get csrs
+ 1169  oc get csr
+ 1170  oc login -u admin -p redhat
+ 1171  oc get csr
+ 1172  ./approve-csrs.sh 
+ 1173  oc get nodes
+ 1174  cd ~
+ 1175  cp -r ~/DO380/labs/pools-adding-workers/* ~/uploads/DO380/ch07/pools-adding-workers/
+ 1176  cd ~/uploads/DO380/ch07/pools-adding-workers/
+ 1177  history
+ 1178  vi commands.txt
+ 1179  ssh lab@utility
+ 1180  vi commands.txt 
+ 1181  oc get nodes
+ 1182  ls
+ 1183  lab pools-adding-workers finish
+ 1184  cd ~
+ 1185  lab storage-local start
+ 1186  oc whoami
+ 1187  oc get nodes
+ 1188  oc debug node/worker06 -- lsblk
+ 1189  oc debug node/worker01 -- lsblk
+ 1190  oc new-project storage-local
+ 1191  cd ~/DO380/labs/storage-local/
+ 1192  cat resources/operator-group.yml 
+ 1193  oc create -f resources/operator-group.yml 
+ 1194  cat resources/subscription.yml 
+ 1195  vi resources/subscription.yml 
+ 1196  oc get packagemanifest | grep storage
+ 1197  oc get packagemanifest local-storage-operator | grep source
+ 1198  oc get packagemanifest local-storage-operator | grep Source
+ 1199  oc describe packagemanifests local-storage-operator | grep Source
+ 1200  oc describe packagemanifests local-storage-operator | grep Channel
+ 1201  vi resources/subscription.yml 
+ 1202  oc apply resources/subscription.yml 
+ 1203  oc apply -f resources/subscription.yml 
+ 1204  oc get pods
+ 1205  oc get all
+ 1206  oc get operatorgroup
+ 1207  oc get subscriptions
+ 1208  oc get clusterserviceversions
+ 1209  oc get csv
+ 1210  oc get csv -o name
+ 1211  export CSV_NAME=$(oc get csv -o name)
+ 1212  echo $CSV_NAME
+ 1213  oc get ${CSV_NAME -o jsonpath='{.spec.customeresourcedefinitions.owned[*].kind}{"\n"}'
+ 1214  oc get ${CSV_NAME} -o jsonpath='{.spec.customeresourcedefinitions.owned[*].kind}{"\n"}'
+ 1215  oc get ${CSV_NAME} -o jsonpath='{.spec.customresourcedefinitions.owned[*].kind}{"\n"}'
+ 1216  oc get localvolumes
+ 1217  oc get ${CSV_NAME} -o jsonpath='{.metadata.annotations.alm-examples}{"\n"}'
+ 1218  ./get_localvolume_template.sh 
+ 1219  cat resources/localvolume.yml 
+ 1220  vi resources/localvolume.yml 
+ 1221  oc create -f resources/localvolume.yml 
+ 1222  oc get localvolumes
+ 1223  oc get pods
+ 1224  oc get pods -w
+ 1225  oc get pods -o wide
+ 1226  oc get nodes
+ 1227  oc get persistentvolumes
+ 1228  oc get pods
+ 1229  oc get persistentvolumes
+ 1230  oc get storageclasses
+ 1231  oc get persistentvolumes
+ 1232  oc get localvolumes
+ 1233  oc delete localvolume local-storage
+ 1234  vi resources/localvolume.yml 
+ 1235  oc get pods
+ 1236  oc create -f resources/localvolume.yml 
+ 1237  oc get pods
+ 1238  oc get localvolumes
+ 1239  oc get persistentvolumes
+ 1240  oc get persistentvolumes -o wide
+ 1241  cd 
+ 1242  mkdir ~/uploads/DO380/ch08/storage-local
+ 1243  cp -r ~/DO380/labs/storage-local/* ~/uploads/DO380/ch08/storage-local/
+ 1244  cd
+ 1245  lab storage-local finish 
+ 1246  history
+ 1247  cd uploads/DO380/ch08/storage-local/
+ 1248  vi commands.txt
+ 1249  ls
+ 1250  cd ..
+ 1251  ls
+ 1252  cd ..
+ 1253  ls
+ 1254  mkdir ch09
+ 1255  oc get prometheuses -A
+ 1256  ls
+ 1257  cd cd ch09
+ 1258  ls
+ 1259  cd ch09
+ 1260  ls
+ 1261  mkdir monitor-alerts
+ 1262  ~
+ 1263  cd ~
+ 1264  lab monitor-alerts start
+ 1265  oc whoami
+ 1266  oc extract secret/alertmanager-main --to /tmp/ -n openshift-monitoring --confirm
+ 1267  cat /tmp/alertmanager.yaml 
+ 1268  sed -i 's/"//g' /tmp/alertmanager.yaml 
+ 1269  cat /tmp/alertmanager.yaml 
+ 1270  vi /tmp/alertmanager.yaml 
+ 1271  oc set data secret/alertmanager-main -n openshift0monitoring --from-file /tmp/alertmanager.yaml 
+ 1272  oc set data secret/alertmanager-main -n openshift-monitoring --from-file /tmp/alertmanager.yaml 
+ 1273  oc logs -f -c alertmanager alertmanager-main-0 -n openshift-monitoring
+ 1274  ssh lab@utility.lab.example.com
+ 1275  ls
+ 1276  vi /tmp/alertmanager.yaml 
+ 1277  oc set data secret/alertmanager-main -n openshift-monitoring --from-file /tmp/alertmanager.yaml 
+ 1278  oc logs -f -c alertmanager alertmanager-main-0 -n openshift-monitoring
+ 1279  ssh lab@utility.lab.example.com
+ 1280  oc logs -f -c alertmanager alertmanager-main-0 -n openshift-monitoring
+ 1281  ssh lab@utility.lab.example.com
+ 1282  ls
+ 1283  vi /tmp/alertmanager.yaml 
+ 1284  oc logs -f -c alertmanager alertmanager-main-0 -n openshift-monitoring
+ 1285  oc get alertmanagers -A
+ 1286  oc describe alermanagers main 
+ 1287  oc describe alermanagers main -n openshift-minitoring
+ 1288  oc describe alertmanagers main
+ 1289  oc describe alertmanagers main -n opensift-monitoring
+ 1290  oc describe alertmanagers main -n openshift-monitoring
+ 1291  oc get pods -n openshift-monitoring
+ 1292  oc describe pod/alertmanager-main-0
+ 1293  oc describe pod/alertmanager-main-0 -n openshift-monitoring
+ 1294  oc logs -f -c alertmanager alertmanager-main-0 -n openshift-monitoring
+ 1295  ssh lab@utility.lab.example.com
+ 1296  vi /tmp/alertmanager.yaml 
+ 1297  pwd
+ 1298  cat ~/DO380/solutions/monitor-alerts/alertmanager.yaml
+ 1299  diff ~/DO380/solutions/monitor-alerts/alertmanager.yaml /tmp/alertmanager.yaml 
+ 1300  vi /tmp/alertmanager.yaml 
+ 1301  oc set data secret/alertmanager-main -n openshift-monitoring --from-file /tmp/alertmanager.yaml 
+ 1302  oc logs -f -c alertmanager alertmanager-main-0 -n openshift-monitoring
+ 1303  diff ~/DO380/solutions/monitor-alerts/alertmanager.yaml /tmp/alertmanager.yaml 
+ 1304  ssh lab@utility.lab.example.com 
+ 1305  oc showconsole
+ 1306  oc get routes
+ 1307  oc status
+ 1308  sed -i 's/warning/critical/' /tmp/alertmanager.yaml 
+ 1309  oc set data secret/alertmanager-main -n openshift-monitoring --from-file /tmp/alertmanager.yaml 
+ 1310  ssh lab@utility.lab.example.com 
+ 1311  lab monitor-alerts finish
+ 1312  history
+ 1313  cd ~/uploads/DO380/ch09/monitor-alerts/
+ 1314  ls
+ 1315  vi commands.txt
+ 1316  hisotry
+ 1317  history
+ 1318  lab monitor-alerts start
+ 1319  pwd
+ 1320  cd ..
+ 1321  ls
+ 1322  cd ../../
+ 1323  ls
+ 1324  cd ..
+ 1325  ls
+ 1326  cd DO380/
+ 1327  ls
+ 1328  cd labs/
+ 1329  ls
+ 1330  cd monitor-alerts/
+ 1331  ls
+ 1332  cp alertmanager.yaml ~/uploads/DO380/ch09/monitor-alerts/
+ 1333  cd ~
+ 1334  lab monitor-alerts finish
+ 1335  lab monitor-troubleshoot start
+ 1336  lab monitor-troubleshoot finish
+ 1337  lab monitor-storage start
+ 1338  pwd
+ 1339  mkdir uploads/DO380/ch09/monitor-storage
+ 1340  oc whoami
+ 1341  oc get configmap cluster-monitoring-config -n openshift-monitoring
+ 1342  oc exec -it prometheus-k8s-0 -c prometheus -n openshift-monitoring -- ls -l /prometheus
+ 1343  oc exec -it prometheus-k8s-0 -c prometheus -n openshift-monitoring -- df -h  /prometheus
+ 1344  oc delete pods -l app=prometheus -n openshift-monitoring
+ 1345  oc exec -it prometheus-k8s-0 -c prometheus -n openshift-monitoring -- ls -l /prometheus
+ 1346  oc get storageclasses
+ 1347  vi ~/DO380/labs/monitor-storage/persistent-storage.yml 
+ 1348  oc create configmap cluster-monitoring-config -n openshift-monitoring --from-file config.yaml=~/DO380/labs/monitor-storage/persistent-storage.yml 
+ 1349  cd ~/DO380/labs/monitor-storage/
+ 1350  oc create configmap cluster-monitoring-config -n openshift-monitoring --from-file config.yaml=persistent-storage.yml 
+ 1351  watch oc get pvc -l app=prometheus -n openshift-monitoring
+ 1352  oc exec -it prometheus-k8s-0 -c prometheus -n openshift-monitoring -- df -h /prometheus
+ 1353  oc get pvc -l app=alertmanager -n openshift-monitoring
+ 1354  oc exec -it prometheus-k8s-0 -c alertmanager -n openshift-monitoring -- df -h /prometheus
+ 1355  oc exec -it alertmanager-main-0 -c alertmanager -n openshift-monitoring -- df -h /prometheus
+ 1356  oc exec -it alertmanager-main-0 -c alertmanager -n openshift-monitoring -- df -h /alertmanager
+ 1357  pwd
+ 1358  ls
+ 1359  pwd
+ 1360  cp persistent-storage.yml ~/uploads/DO380/ch09/monitor-storage/
+ 1361  history 50
+ 1362  vi commands.txt
+ 1363  lab monitor-storage finish
+ 1364  pwd
+ 1365  cd ..
+ 1366  ls
+ 1367  cd gitops-deploy/
+ 1368  ls
+ 1369  cd ..
+ 1370  pwd
+ 1371  rm -rf auth-ldapsync/ gitops-deploy/
+ 1372  lab logging-deploy start
+ 1373  mkdir ~/uploads/DO380/ch10
+ 1374  mkdir ~/uploads/DO380/ch10/logging-deploy
+ 1375  cd ~/DO380/labs/logging-deploy/
+ 1376  ls
+ 1377  vi cl-minimal.yml 
+ 1378  oc whoami
+ 1379  ansible-playbook cluster-logging.yml -v
+ 1380  oc get csv -A
+ 1381  oc get csv -n openshift-logging
+ 1382  watch oc get deployment,pod,pvc,svc,route -n openshift-logging
+ 1383  ls
+ 1384  cp * ~/uploads/DO380/ch10/logging-deploy/
+ 1385  history 20
+ 1386  vi ~/uploads/DO380/ch10/logging-deploy/commands.txt
+ 1387  cd 
+ 1388  lab logging-deploy finish
+ 1389  lab logging-query start
+ 1390  lab logging-query finish
+ 1391  lab logging-visualize start
+ 1392  lab logging-virtualize finish
+ 1393  lab logging-visualize finish
+ 1394   lab logging-diagnose start
+ 1395   lab logging-diagnose finish
+ 1396  git clone https://github.com/rshipman24/traininginfo.git
+ 1397  pwd
+ 1398  ls
+ 1399  cd traininginfo/
+ 1400  ls
+ 1401  cd ..
+ 1402  rm -rf traininginfo/
+ 1403  git clone https://github.com/rshipman24/traininginfo.git
+ 1404  cd traininginfo/
+ 1405  ls
+ 1406  cd DO380/
+ 1407  ls
+ 1408  cp -r ~/uploads/DO380/* .
+ 1409  ls
+ 1410  git add -A
+ 1411  git sttus
+ 1412  git status
+ 1413  git --help
+ 1414  git rm ch08/storage-file/photos/*
+ 1415  git status
+ 1416  git rm ch08/storage-file/photos/photos.tar.gz
+ 1417  git rm ch08/storage-file/photos/photos.tar.gz -f
+ 1418  git status
+ 1419  git rm ch08/storage-file/photos/
+ 1420  git rm ch08/storage-file/photos/ -r
+ 1421  git status
+ 1422  cd ..
+ 1423  ls
+ 1424  cd ..
+ 1425  ls
+ 1426  rm -rf traininginfo/
+ 1427  cd ~/uploads/DO380/ch08/
+ 1428  ls
+ 1429  cd storage-block/
+ 1430  ls
+ 1431  cd test-db/
+ 1432  ls
+ 1433  cd ../
+ 1434  cd ../storage-file/
+ 1435  ls
+ 1436  rm -rf photos/
+ 1437  ls
+ 1438  cd ~
+ 1439  ls
+ 1440  git clone https://github.com/rshipman24/traininginfo.git
+ 1441  cd traininginfo/
+ 1442  ls
+ 1443  cd DO380/
+ 1444  ls
+ 1445  cp -r ~/uploads/DO380/* .
+ 1446  git add -A
+ 1447  git status
+ 1448  git commit -m 'additional training notes'
+ 1449  ls
+ 1450  cat ../../token 
+ 1451  git push
+ 1452  history
+ 1453  history 2000 | more
+ 1454  clear
+ 1455  lab logging-diagnose start
+ 1456  oc project logging-diagnose
+ 1457  oc edit deploy/noisy
+ 1458  oc scale deployment/noisy --replicas 50
+ 1459  oc scale deployment/noisy --replicas 1
+ 1460  lab logging-diagnose finish
+ 1461  lab workers-degrade start
+ 1462  oc whoami --show-console
+ 1463  oc whoami
+ 1464  oc get nodes
+ 1465  oc describe node worker01
+ 1466  oc debug node/worker01
+ 1467  oc project default
+ 1468  oc debug node/worker01
+ 1469  ssh core@worker01 "sudo systemctl is-active crio"
+ 1470  ssh core@worker01 "sudo systemctl start crio"
+ 1471  ssh core@worker01 "sudo systemctl is-active crio"
+ 1472  oc get nodes
+ 1473  oc describe node/worker01 | grep -i taints
+ 1474  oc get nodes
+ 1475  oc describe node/worker01 | grep -i taints
+ 1476  lab workers-degrade finish
+ 1477  ls
+ 1478  mkdir ch11
+ 1479  cd ch11
+ 1480  history
+ 1481  vi commands.txt
+ 1482  ls
+ 1483  mkdir workers-degrade 
+ 1484  mv commands.txt workers-degrade/
+ 1485  ls
+ 1486  mkdir workers-capacity
+ 1487  lap workers-capacity start
+ 1488  lab workers-capacity start
+ 1489  oc whoami
+ 1490  oc new-project workers-capacity
+ 1491  cd ~/DO380/labs/workers-capacity/
+ 1492  ls
+ 1493  cat job.yml 
+ 1494  oc apply -f job.yml 
+ 1495  watch oc get job,pod
+ 1496  oc get pod -o wide
+ 1497  oc describe node worker02
+ 1498  history | grep -ext
+ 1499  openssl -v
+ 1500  openssl -V
+ 1501  openssl version
+ 1502  history
+ 1503  lab workers-capacity finish
+ 1504  lab certificate-enterprise-ca start
+ 1505  cd ~
+ 1506  ls
+ 1507  lab certificate-enterprise-ca start
+ 1508  lab certificates-enterprise-ca start
+ 1509  ls
+ 1510  cd DO380/
+ 1511  ls
+ 1512  cd labs/
+ 1513  ls
+ 1514  cd certificates-enterprise-ca/
+ 1515  ls
+ 1516  cat apiserver-cluster.yaml 
+ 1517  cat ingresscontrollers.yaml 
+ 1518  cat proxy-cluster.yaml 
+ 1519  ls
+ 1520  find / -name ansible
+ 1521  ls
+ 1522  cat apiserver-cluster.yaml 
+ 1523  cd /usr/local/lib/ansible/
+ 1524  ls
+ 1525  cd certs/
+ 1526  ls
+ 1527  cat classroom-ca.yml 
+ 1528  ls
+ 1529  cat wildcard.yml 
+ 1530  ls -l
+ 1531  cp * ~/uploads/DO380/ch06/certificates-troubleshoot/
+ 1532  ls
+ 1533  cd ..
+ 1534  ls
+ 1535  cd k8s-optimize/
+ 1536  ls
+ 1537  cd ..
+ 1538  ls
+ 1539  cd pools/
+ 1540  ls
+ 1541  lab certificates-enterprise-ca finish
+ 1542  lab certificates-troubleshoot finish
+ 1543  oc get mc
+ 1544  pwd
+ 1545  cd ~
+ 1546  oc get nodes
+ 1547  lab pools-creating start
+ 1548  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+ 1549  oc get nodes
+ 1550  oc label node/worker04 node-role.kubernetes.io/infra=
+ 1551  oc label node/worker04 node-role.kubernetes.io/infra
+ 1552  oc label node/worker04 node-role.kubernetes.io/worker=
+ 1553  oc label node/worker05 node-role.kubernetes.io/worker=
+ 1554  oc label node/worker06 node-role.kubernetes.io/worker=
+ 1555  oc get nodes
+ 1556  oc explaine node-role
+ 1557  oc explaine node-role.kubernetes.io
+ 1558  oc explain node-role
+ 1559  oc explain node-role.kubernetes.io
+ 1560  oc explain label
+ 1561  oc label node/worker06 node-role.kubernetes.io/test
+ 1562  oc label node/worker06 node-role.kubernetes.io/test=
+ 1563  oc get nodes
+ 1564  oc label node/worker06 node-role.kubernetes.io/test-
+ 1565  oc label node/worker06 node-role.kubernetes.io/worker-
+ 1566  oc get nodes
+ 1567  oc label node/worker04 node-role.kubernetes.io/worker-
+ 1568  oc label node/worker05 node-role.kubernetes.io/worker-
+ 1569  oc get nodes
+ 1570  cd ~/DO380/labs/pools-creating/
+ 1571  ls
+ 1572  base64 motd.txt
+ 1573  cat motd.txt 
+ 1574  cat motd-mc.yml
+ 1575  vi motd-mc.yml 
+ 1576  cat motd-mc.yml
+ 1577  vi infra-mcp.yml 
+ 1578  ls
+ 1579  oc create -f .
+ 1580  oc get mc
+ 1581  oc get mcp
+ 1582  oc describe mcp/infra
+ 1583  oc describe node/worker05
+ 1584  oc get nodes
+ 1585  oc describe node/worker05
+ 1586  oc get nodes
+ 1587  oc debug node/worker05
+ 1588  ls
+ 1589  cp * ~/uploads/DO380/ch07/pools-adding-workers/
+ 1590  cd /usr/local
+ 1591  ls
+ 1592  cd lib
+ 1593  ls
+ 1594  cd ansible/
+ 1595  ls
+ 1596  cd pools/
+ 1597  ls
+ 1598  cd ~
+ 1599  ls
+ 1600  rm -rf traininginfo/
+ 1601  ls
+ 1602  git clone https://github.com/rshipman24/traininginfo.git
+ 1603  cd traininginfo/
+ 1604  ls
+ 1605  cd DO380/
+ 1606  ls
+ 1607  cp ~/uploads/DO380/* .
+ 1608  cp cd .. ~/uploads/DO380/* .
+ 1609  cd ..
+ 1610  ls
+ 1611  cd ..
+ 1612  ls
+ 1613  rm -rf traininginfo/
+ 1614  git clone https://github.com/rshipman24/traininginfo.git
+ 1615  history
+ 1616  pwdd
+ 1617  dpwd
+ 1618  pwd
+ 1619  ls
+ 1620  cd uploads/
+ 1621  ls
+ 1622  cd DO380/
+ 1623  ls
+ 1624  pwd
+ 1625  cd ch10
+ 1626  ls
+ 1627  cd ..
+ 1628  ls
+ 1629  pwdd
+ 1630  pwd
+ 1631  mkdir ch11
+ 1632  cd ch11
+ 1633  ls
+ 1634  cd ../ch07
+ 1635  ls
+ 1636  mkdir pools-creating
+ 1637  vi commands.txt
+ 1638  cp ~/DO380/labs/pools-creating/* .
+ 1639  ls
+ 1640  pwdd
+ 1641  mv *.yml pools-creating/
+ 1642  mv *.txt pools-creating/
+ 1643  ls
+ 1644  cd pools-creating/
+ 1645  ls
+ 1646  cd ..
+ 1647  ls
+ 1648  history 1000 | more
+ 1649  ks
+ 1650  ls
+ 1651  cd ch11
+ 1652  ls
+ 1653  mkdir workers-degrade
+ 1654  cd workers-degrade/
+ 1655  vi commands.txt
+ 1656  ls
+ 1657  cd ..
+ 1658  ls
+ 1659  mkdir workers-capacity
+ 1660  cd workers-capacity/
+ 1661  vi commands.txt
+ 1662  cd ..
+ 1663  ls
+ 1664  cd ..
+ 1665  ls
+ 1666  cd ..
+ 1667  ls
+ 1668  cd ..
+ 1669  ls
+ 1670  cd DO380/
+ 1671  ls
+ 1672  cd labs/
+ 1673  ls
+ 1674  lap pools-creating finish
+ 1675  lab pools-creating finish
+ 1676  lab worker-capacity start
+ 1677  lab workers-capacity start
+ 1678  ls
+ 1679  ca workers-capacity/
+ 1680  ls
+ 1681  cd workers-capacity/
+ 1682  ls
+ 1683  cp job.yml ~/uploads/DO380/ch11/workers-capacity/
+ 1684  ls
+ 1685  pwd
+ 1686  cd ..
+ 1687  cd ../solutions/
+ 1688  cp job.yml ~/uploads/DO380/ch11/workers-capacity/
+ 1689  ls
+ 1690  cd workers-capacity/
+ 1691  ls
+ 1692  cp job.yml ~/uploads/DO380/ch11/workers-capacity/
+ 1693  ls
+ 1694  pwd
+ 1695  cd ~/uploads/DO380/ch11/
+ 1696  ls
+ 1697  cd workers-degrade/
+ 1698  ls
+ 1699  cat commands.txt 
+ 1700  cd ..
+ 1701  cd ~
+ 1702  ls
+ 1703  rm -rf traininginfo/
+ 1704  git clone https://github.com/rshipman24/traininginfo.git
+ 1705  cd traininginfo/
+ 1706  cd DO380/
+ 1707  ls
+ 1708  cp -r ~/uploads/DO380/* .
+ 1709  ls -l
+ 1710  git add -A
+ 1711  git commit -m 'additional training notes'
+ 1712  git status
+ 1713  cat ~/token 
+ 1714  git push
+ 1715  history 2000 | more
+ 1716  history 3000 | more
+ 1717  ls
+ 1718  pwd
+ 1719  cd ~/uploads/DO380/
+ 1720  ls
+ 1721  cd ch01
+ 1722  ls
+ 1723  cat image_trigger_commands_ch01 
+ 1724  vi commands.txt
+ 1725  ls
+ 1726  pwd
+ 1727  mkdir k8s-deploy
+ 1728  mv base k8s-deploy/
+ 1729  ls
+ 1730  mv *.txt k8s-deploy/
+ 1731  ls
+ 1732  mv overlay k8s-deploy/
+ 1733  mv overlays k8s-deploy/
+ 1734  ls
+ 1735  mv hello.yml k8s-deploy/
+ 1736  mv ns-and-rbac.yml k8s-deploy/
+ 1737  ls
+ 1738  mkdir k8s-optimize
+ 1739  vi image_trigger_commands_ch01 
+ 1740  mv image_trigger_commands_ch01 commands.txt
+ 1741  ls
+ 1742  mv commands.txt k8s-optimize/
+ 1743  ls
+ 1744  cd ..
+ 1745  ls
+ 1746  mkdir cmd_history.txt
+ 1747  rmdir cmd_history.txt/
+ 1748  touch cmd_history1.txt
+ 1749  history > cmd_history1.txt 

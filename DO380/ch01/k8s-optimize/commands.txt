@@ -1,0 +1,17 @@
+   67  oc whoami
+   68  oc get deployments,pods,services
+   69  oc project k8s-optimize
+   70  oc get deployments,pods,services
+   71  oc get ingress
+   72  oc get deployment/hello -o jason | jq '.spec.template.spec.containers[0].image'
+   73  oc get deployment/hello -o json | jq '.spec.template.spec.containers[0].image'
+   74  ~/DO380/labs/k8s-optimize/watch.sh 
+    7  podman login quay.io
+   14  skopeo copy docker://quay.io/redhattraining/versioned-hello:v1.0 docker://quay.io/ralph_shipman/versioned-hello:latest
+   15  oc import-image quay.io/ralph_shipman/versioned-hello:latest --confirm --scheduled
+   16  oc set triggers deployment/hello --from-image versioned-hello:latest -c hello
+   17  oc get deployment/hello -o json 
+   18  oc get deployment/hello -o json | jq '.metadata.annotations'
+   19  skopeo copy docker://quay.io/redhattraining/versioned-hello:v1.1 docker://quay.io/ralph_shipman/versioned-hello:latest
+   21  oc import-image quay.io/ralph_shipman/versioned-hello:latest
+   22  oc get deployment/hello -o json | jq '.metadata.annotations'
