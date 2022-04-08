@@ -1,0 +1,5 @@
+1.  vi k8s.yml
+2.  ansible-playbook -v k8s.yml
+3.  oc project automation-ansible
+4.  oc get all
+5.  curl hello-automation-ansible.apps.ocp4.example.com
