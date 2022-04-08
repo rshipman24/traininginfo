@@ -1,10 +1,13 @@
-console=console-openshift-console.apps.ocp4.example.com
-
-curl https://console-openshift-console.apps.ocp4.example.com -k -v 2>&1 | grep 'expire date'
-
-hosts=oauth-openshift.apps.ocp4.example.com console-openshift-console.apps.ocp4.example.com downloads-openshift-console.apps.ocp4.example.com alertmanager-main-openshift-monitoring.apps.ocp4.example.com grafana-openshift-monitoring.apps.ocp4.example.com prometheus-k8s-openshift-monitoring.apps.ocp4.example.com thanos-querier-openshift-monitoring.apps.ocp4.example.com
-
-for host in oauth-openshift.apps.ocp4.example.com console-openshift-console.apps.ocp4.example.com downloads-openshift-console.apps.ocp4.example.com alertmanager-main-openshift-monitoring.apps.ocp4.example.com grafana-openshift-monitoring.apps.ocp4.example.com prometheus-k8s-openshift-monitoring.apps.ocp4.example.com thanos-querier-openshift-monitoring.apps.ocp4.example.com ; do curl https://thanos-querier-openshift-monitoring.apps.ocp4.example.com -k -w %{url_effective} %{http_code}n -o /dev/null -s ; done
-
-filter='?(.name==htpasswd_provider)'
-oc get oauth cluster -o jsonpath={.spec.identityProviders[?(.name=="htpasswd_provider")].htpasswd.fileData.name}{\n}
+1.  console=$(oc get route -n openshift-console console -o jsonpath='{.spec.host}')
+2.  curl https://$console -k -v 2>&1 | grep 'expire date'
+3.  hosts=$(oc get route -A -o jsonpath='{.items[*].spec.host}')
+4.  for host in $hosts ; do curl https://$host -k -w "%{url_effective} %{http_code}\n" -o /dev/null -s ; done
+5.  oc get oauth cluster -o json
+6.  filter='?(.name==htpasswd_provider)'
+7.  oc get oauth cluster -o jsonpath={.spec.identityProviders[?(.name=="htpasswd_provider")].htpasswd.fileData.name}{\n}
+8.  chmod +x get-users.sh
+9.  ./get-users.sh
+10.  ./add-user.sh user1 user1
+11.  oc login -u user1 -p user1
+12.  oc login -u admin -p redhat
+13.  ./add-user.sh user2 user2
