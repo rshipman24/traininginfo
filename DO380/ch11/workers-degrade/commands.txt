@@ -1,0 +1,15 @@
+1462  oc whoami --show-console
+ 1463  oc whoami
+ 1464  oc get nodes
+ 1465  oc describe node worker01
+ 1466  oc debug node/worker01
+ 1467  oc project default
+ 1468  oc debug node/worker01
+ 1469  ssh core@worker01 "sudo systemctl is-active crio"
+ 1470  ssh core@worker01 "sudo systemctl start crio"
+ 1471  ssh core@worker01 "sudo systemctl is-active crio"
+ 1472  oc get nodes
+ 1473  oc describe node/worker01 | grep -i taints
+ 1474  oc get nodes
+ 1475  oc describe node/worker01 | grep -i taints
+

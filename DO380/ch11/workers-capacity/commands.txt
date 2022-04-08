@@ -1,0 +1,8 @@
+ 1489  oc whoami
+ 1490  oc new-project workers-capacity
+ 1491  cd ~/DO380/labs/workers-capacity/
+ 1493  cat job.yml 
+ 1494  oc apply -f job.yml 
+ 1495  watch oc get job,pod
+ 1496  oc get pod -o wide
+

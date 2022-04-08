@@ -1,0 +1,29 @@
+1547  lab pools-creating start
+ 1548  oc login -u admin -p redhat https://api.ocp4.example.com:6443
+ 1550  oc label node/worker04 node-role.kubernetes.io/infra=
+ 1553  oc label node/worker05 node-role.kubernetes.io/infra=
+ 1554  oc label node/worker06 node-role.kubernetes.io/infra=
+ 1555  oc get nodes
+ 1565  oc label node/worker06 node-role.kubernetes.io/worker-
+ 1567  oc label node/worker04 node-role.kubernetes.io/worker-
+ 1568  oc label node/worker05 node-role.kubernetes.io/worker-
+ 1569  oc get nodes
+ 1570  cd ~/DO380/labs/pools-creating/
+ 1571  ls
+ 1572  base64 motd.txt
+ 1573  cat motd.txt 
+ 1574  cat motd-mc.yml
+ 1575  vi motd-mc.yml 
+ 1576  cat motd-mc.yml
+ 1577  vi infra-mcp.yml 
+ 1578  ls
+ 1579  oc create -f .
+ 1580  oc get mc
+ 1581  oc get mcp
+ 1582  oc describe mcp/infra
+ 1583  oc describe node/worker05
+ 1584  oc get nodes
+ 1585  oc describe node/worker05
+ 1586  oc get nodes
+ 1587  oc debug node/worker05
+
