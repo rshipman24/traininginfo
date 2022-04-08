@@ -1,0 +1,17 @@
+1.  cd ~/DO380/labs/automation-scripts
+2.  cat audit.sh
+      #!/usr/bin/env bash
+      oc get pods --all-namespaces \
+      -o jsonpath="{.items[*].spec.containers[*].image}" \
+      | sed 's/ /\n/g' \
+      | sort \
+      | uniq
+3.  ./audit.sh
+4.  oc new-project automation-scripts
+5.  oc create -f rbac.yml
+6.  oc create -f job.yml
+7.  oc get jobs,pods
+8.  oc logs job.batch/audit-sh
+9.  oc create -f cronjob.yml
+10. watch oc get cronjobs,jobs,pods
+11. oc logs job.batch/audit-cron-1594932720
