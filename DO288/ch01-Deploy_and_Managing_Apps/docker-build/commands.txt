@@ -1,0 +1,36 @@
+1.  cd DO288-apps
+2.  git checkout main
+3.  git checkout -b docker-build
+4.  git push -u origin docker-build
+5.  cat ubi-echo/Dockerfile
+      FROM registry.access.redhat.com/ubi8/ubi:8.0
+      USER 1001
+      CMD bash -c "while true; do echo test; sleep 5; done"
+6.  source /usr/local/etc/ocp4.config
+7.  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+8.  oc new-project ${RHT_OCP4_DEV_USER}-docker-build
+9.  oc new-app --name echo https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#docker-build --context-dir ubi-echo
+10. oc new-project ${RHT_OCP4_DEV_USER}-docker-build
+11. oc new-app --name echo https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#docker-build --context-dir ubi-echo
+12. oc logs -f bc/echo
+13. oc status
+14. oc get pods
+15. oc logs echo-555xx | tail -n 3
+16. oc describe bc echo
+17. oc describe is echo
+18. oc describe deployment echo
+19. vi ubi-echo/Dockerfile
+      FROM registry.access.redhat.com/ubi8/ubi:8.0
+      USER 1001
+      CMD bash -c "while true; do (( i++ )); echo test \$i; sleep 5; done"
+20. git commit -a -m 'Add a counter'
+21. git push
+22. cd ~
+21. oc start-build echo
+22. oc logs -f bc/echo
+23. oc status
+24. oc get pods
+25. oc logs echo-pl12cx | head -n 3
+26. oc describe is echo
+27. oc delete all -l app=echo
+28. oc get all
