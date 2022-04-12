@@ -1,0 +1,31 @@
+1.  cd ~/DO288-apps
+2.  git checkout main
+3.  ls ~/DO288-apps/quotes
+4.  less ~/DO288-apps/quotes/get.php
+5.  vi ~/DO288/labs/build-template/php-mysqlephemeral.json
+6.  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+7.  oc get templates -n openshift | grep php | grep mysql
+8.  oc new-project ${RHT_OCP4_DEV_USER}-common
+9.  oc create -f ~/DO288/labs/build-template/php-mysql-ephemeral.json
+10. oc new-project ${RHT_OCP4_DEV_USER}-build-template
+11. oc describe template php-mysql-ephemeral -n ${RHT_OCP4_DEV_USER}-common
+12. cat ~/DO288/labs/build-template/create-app.sh
+13. ~/DO288/labs/build-template/create-app.sh
+14. oc logs -f bc/quotesapi
+15. oc get pod
+16. oc get route
+17. oc describe svc quotesdb | grep Endpoints
+18. oc describe pod quotesdb-6b7ffcc649-dslpq | grep IP
+19. oc describe pod quotesdb-6b7ffcc649-dslpq  grep -A 4 Environment
+20. oc describe pod quotesapi-7d76ff58f8-6j2gx | grep -A 5 Environment
+21. oc rsh quotesapi-7d76ff58f8-6j2gx bash -c 'echo > /dev/tcp/$DATABASE_SERVICE_NAME/3306 && echo OK || echo FAIL'
+22. oc logs quotesapi-7d76ff58f8-6j2gx
+23. oc cp ~/DO288/labs/build-template/quote.sql quotesdb-6b7ffcc649-dslpq:/tmp/quote.sql
+24. oc rsh -t quotesdb-6b7ffcc649-dslpq
+      sh-4.2$ mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < /tmp/quote.sql
+      ...output omitted...
+      sh-4.2$ exit 
+25. curl -si http://quote-$RHT_OCP4_DEV_USER.$RHT_OCP4_WILDCARD_DOMAIN/get.php
+26. cd ~
+27. oc delete project ${RHT_OCP4_DEV_USER}-build-template
+28. oc delete project ${RHT_OCP4_DEV_USER}-common
