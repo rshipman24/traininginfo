@@ -1,0 +1,71 @@
+1.  vi ~/DO288/labs/container-build/httpd-parent/Containerfile
+      FROM registry.access.redhat.com/ubi8/ubi:8.0
+      MAINTAINER Red Hat Training <training@redhat.com>
+      # DocumentRoot for Apache
+      ENV DOCROOT=/var/www/html
+      RUN yum install -y --no-docs --disableplugin=subscription-manager httpd && \
+      yum clean all --disableplugin=subscription-manager -y && \
+      echo "Hello from the httpd-parent container!" > ${DOCROOT}/index.html
+      # Allows child images to inject their own content into DocumentRoot
+      ONBUILD COPY src/ ${DOCROOT}/
+      EXPOSE 80
+      # This stuff is needed to ensure a clean start
+      RUN rm -rf /run/httpd && mkdir /run/httpd
+      # Run as the root user
+      USER root
+      # Launch httpd
+      CMD /usr/sbin/httpd -DFOREGROUND
+2.  cd DO288-apps
+3.  git checkout main
+4.  git checkout -b container-build
+5.  git push -u origin container-build
+6.  vi ~/DO288-apps/container-build/Containerfile
+      FROM quay.io/redhattraining/http-parent
+7.  vi ~/DO288-apps/container-build/src/index.html
+      <!DOCTYPE html>
+      <html>
+      <body>
+      Hello from the Apache child container!
+      </body>
+      </html>
+8.  oc new-project ${RHT_OCP4_DEV_USER}-container-build
+9.  podman build --layers=false -t do288-apache ./container-build
+10. podman images
+11. podman tag do288-apache quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+12. podman login quay.io -u ${RHT_OCP4_QUAY_USER}
+13. podman push quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+14. oc new-app --name hola quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+15. oc get pods
+16. oc logs hola-13p75f5
+17. oc delete all -l app=hola
+
+#
+# Modify image and redepoly via podman and oc
+#
+
+18.  vi ~/DO288-apps/container-build/Containerfile
+        FROM quay.io/redhattraining/http-parent
+        EXPOSE 8080
+        LABEL io.openshift.expose-services="8080:http"
+        LABEL io.k8s.description="A basic Apache HTTP Server child image, uses ONBUILD" \
+              io.k8s.display-name="Apache HTTP Server" \
+              io.openshift.expose-services="8080:http" \
+               io.openshift.tags="apache, httpd"
+        RUN sed -i "s/Listen 80/Listen 8080/g" /etc/httpd/conf/httpd.conf
+        RUN sed -i "s/#ServerName www.example.com:80/ServerName 0.0.0.0:8080/g" /etc/httpd/conf/httpd.conf
+        RUN chgrp -R 0 /var/log/httpd /var/run/httpd && \
+            chmod -R g=u /var/log/httpd /var/run/httpd
+        USER 1001
+19. cd container-build
+20. git commit -a -m "Changed the Containerfile to enable running as a random uid on OpenShift"
+21. git push
+22. cd ..
+23. podman rmi -a --force
+24. podman build --layers=false -t do288-apache ./container-build
+25. podman tag do288-apache quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+26. podman push quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+27. oc get pods
+28. oc expose --port='8080' svc/hola
+29. oc get route
+30. curl http://hola-${RHT_OCP4_DEV_USER}-container-build.${RHT_OCP4_WILDCARD_DOMAIN}
+31. oc delete project ${RHT_OCP4_DEV_USER}-container-build
