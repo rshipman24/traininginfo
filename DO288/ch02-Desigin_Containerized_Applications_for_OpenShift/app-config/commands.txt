@@ -1,0 +1,29 @@
+1.  cd DO288-apps
+2.  git checkout main
+3.  git checkout -b app-config
+4.  git push -u origin app-config
+5.  oc new-project ${RHT_OCP4_DEV_USER}-app-config
+6.  oc new-app --name myapp --build-env \
+    npm_config_registry=http://${RHT_OCP4_NEXUS_SERVER}/repository/nodejs \
+    nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#app-config \
+    --context-dir app-config
+7.  oc logs -f bc/myapp
+8.  oc get pods
+9.  oc expose svc myapp
+10. oc get route
+11. curl http://myapp-${RHT_OCP4_DEV_USER}-app-config.${RHT_OCP4_WILDCARD_DOMAIN}
+12. oc create configmap myappconf --from-literal APP_MSG="Test Message"
+13. oc describe cm/myappconf
+14. oc create secret generic myappfilesec --from-file /home/student/DO288-apps/app-config/myapp.sec
+15. oc get secret/myappfilesec -o json
+16. oc set env deployment/myapp --from configmap/myappconf
+17. oc set volume deployment/myapp --add -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec
+18. oc status
+19. oc get pods
+20. oc rsh myapp-ddffbc7f9-ntsjq env | grep APP_MSG
+21. curl http://myapp-${RHT_OCP4_DEV_USER}-app-config.${RHT_OCP4_WILDCARD_DOMAIN}
+22. oc edit cm/myappconf
+23. oc describe cm/myappconf
+24. oc delete pod myapp-ddffbc7f9-ntsjq
+25. curl http://myapp-${RHT_OCP4_DEV_USER}-app-config.${RHT_OCP4_WILDCARD_DOMAIN}
+26. oc delete project ${RHT_OCP4_DEV_USER}-app-config
