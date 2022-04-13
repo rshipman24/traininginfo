@@ -1,0 +1,19 @@
+1.  podman login -u ${RHT_OCP4_QUAY_USER} quay.io
+2.  skopeo copy oci:/home/student/DO288/labs/external-registry/ubi-sleep docker://quay.io/${RHT_OCP4_QUAY_USER}/ubi-sleep:1.0
+3.  podman search quay.io/ubi-sleep
+4.  skopeo inspect docker://quay.io/${RHT_OCP4_QUAY_USER}/ubi-sleep:1.0
+5.  podman run -d --name sleep quay.io/${RHT_OCP4_QUAY_USER}/ubi-sleep:1.0
+6.  podman ps
+7.  podman logs sleep
+8.  podman stop sleep
+9.  podman rm sleep
+10. oc new-project ${RHT_OCP4_DEV_USER}-external-registry
+11. oc create secret generic quayio \
+    --from-file .dockerconfigjson=${XDG_RUNTIME_DIR}/containers/auth.json \
+    --type kubernetes.io/dockerconfigjson
+12. oc secrets link default quayio --for pull
+13. oc new-app --name sleep --docker-image quay.io/${RHT_OCP4_QUAY_USER}/ubi-sleep:1.0
+14. oc get pod
+15. oc logs sleep-7bf77b7596-ldrsr
+16. oc delete project ${RHT_OCP4_DEV_USER}-external-registry
+17. skopeo delete docker://quay.io/${RHT_OCP4_QUAY_USER}/ubi-sleep:1.0
