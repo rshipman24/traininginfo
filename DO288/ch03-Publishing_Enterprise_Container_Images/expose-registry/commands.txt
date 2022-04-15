@@ -1,0 +1,16 @@
+1.  oc get route -n openshift-image-registry
+2.  INTERNAL_REGISTRY=$( oc get route default-route -n openshift-image-registry -o jsonpath='{.spec.host}' )
+3.  echo ${INTERNAL_REGISTRY}
+4.  oc new-project ${RHT_OCP4_DEV_USER}-common
+5.  TOKEN=$(oc whoami -t)
+6.  skopeo copy --dest-creds=${RHT_OCP4_DEV_USER}:${TOKEN} \
+    oci:/home/student/DO288/labs/expose-registry/ubi-info \
+    docker://${INTERNAL_REGISTRY}/${RHT_OCP4_DEV_USER}-common/ubi-info:1.0
+7.  oc get is
+8.  podman login -u ${RHT_OCP4_DEV_USER} -p ${TOKEN} ${INTERNAL_REGISTRY}
+9.  podman pull ${INTERNAL_REGISTRY}/${RHT_OCP4_DEV_USER}-common/ubi-info:1.0
+10. podman run --name info ${INTERNAL_REGISTRY}/${RHT_OCP4_DEV_USER}-common/ubi-info:1.0
+11. oc delete is ubi-info
+12. oc delete project ${RHT_OCP4_DEV_USER}-common
+13. podman rm into
+14. podman rmi -f ${INTERNAL_REGISTRY}/${RHT_OCP4_DEV_USER}-common/ubi-info:1.0
