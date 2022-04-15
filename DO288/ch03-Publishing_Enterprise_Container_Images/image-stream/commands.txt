@@ -1,0 +1,13 @@
+1.  oc new-project ${RHT_OCP4_DEV_USER}-common
+2.  skopeo inspect docker://quay.io/redhattraining/hello-world-nginx
+3.  oc import-image hello-world --confirm --from quay.io/redhattraining/hello-world-nginx
+4.  oc get istag
+5.  oc describe is hello-world
+6.  oc new-project ${RHT_OCP4_DEV_USER}-image-stream
+7.  oc new-app --name hello -i ${RHT_OCP4_DEV_USER}-common/hello-world
+8.  oc get pod
+9.  oc expose svc hello
+10. oc get route
+11. curl http://hello-${RHT_OCP4_DEV_USER}-image-stream.${RHT_OCP4_WILDCARD_DOMAIN} 
+12. oc delete project ${RHT_OCP4_DEV_USER}-image-stream
+13. oc delete project ${RHT_OCP4_DEV_USER}-common
