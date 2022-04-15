@@ -1,0 +1,54 @@
+1.  cd DO288-apps
+2.  git checkout main
+3.  git checkout -b manage-builds
+4.  git push -u origin manage-builds
+5.  cat /home/student/DO288-apps/java-serverhost/src/main/java/com/redhat/training/example/javaserverhost/rest/ServerHostEndPoint.java
+        package com.redhat.training.example.javaserverhost.rest;
+        import javax.ws.rs.Path;
+        import javax.ws.rs.core.Response;
+        import javax.ws.rs.GET;
+        import javax.ws.rs.Produces;
+        import java.net.InetAddress;
+        @Path("/")
+        public class ServerHostEndPoint {
+            @GET
+            @Produces("text/plain")
+            public Response doGet() {
+          String host = "";
+          try {
+          host = InetAddress.getLocalHost().getHostName();
+          }
+          catch (Exception e) {
+          e.printStackTrace();
+          }
+          String msg = "I am running on server "host" Version 1.0 \n";
+          return Response.ok(msg).build();
+         }
+        }
+6.  oc new-project ${RHT_OCP4_DEV_USER}-manage-builds
+7.  oc new-app --name jhost \
+    --build-env MAVEN_MIRROR_URL=http://${RHT_OCP4_NEXUS_SERVER}/repository/java \
+    -i redhat-openjdk18-openshift:1.8 \
+    https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#manage-builds \
+    --context-dir java-serverhost
+8.  oc logs -f bc/jhost
+9.  oc get pods
+10. oc expose svc/jhost
+11. oc get route
+12. curl http://jhost-${RHT_OCP4_DEV_USER}-manage-builds.${RHT_OCP4_WILDCARD_DOMAIN}
+13. oc get bc
+14. oc get builds
+
+# Update and Redeploy Application #
+
+15. vi /home/student/DO288-apps/java-serverhost/src/main/java/com/redhat/training/example/javaserverhost/rest/ServerHostEndPoint.java
+16. cd /home/student/DO288-apps/java-serverhost
+17. git commit -a -m 'Updated the version'
+18. git push
+18. cd ..
+19. oc start-build bc/jhost
+20. oc get builds
+21. oc logs -f build/jhost-3
+22. oc get pods
+23. curl http://jhost-${RHT_OCP4_DEV_USER}-manage-builds.${RHT_OCP4_WILDCARD_DOMAIN}
+24. oc delete project ${RHT_OCP4_DEV_USER}-manage-builds
