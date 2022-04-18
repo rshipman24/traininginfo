@@ -1,0 +1,15 @@
+1.  oc project ${RHT_OCP4_DEV_USER}-post-commit
+2.  oc status
+3.  oc new-app --name hook --context-dir post-commit php:7.3~http://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps
+4.  oc logs -f bc/hook
+5.  oc get pods
+6.  cat ~/DO288/labs/post-commit/create-hook.sh
+7.  ~/DO288/labs/post-commit/create-hook.sh
+8.  oc describe bc/hook | grep Post
+9.  oc start-build bc/hook -F
+10. oc get builds
+11. oc set env bc/hook DEVELOPER="Your Name"
+12. oc set env bc/hook --list
+13. oc start-build bc/hook -F
+14. firefox $(oc get route/builds-for-managers -o jsonpath='{.spec.host}') &
+15. oc delete project ${RHT_OCP4_DEV_USER}-post-commit
