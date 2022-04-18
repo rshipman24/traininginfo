@@ -1,0 +1,18 @@
+1.  oc new-project ${RHT_OCP4_DEV_USER}-trigger-builds
+2.  podman login -u ${RHT_OCP4_QUAY_USER} quay.io
+3.  cd cd /home/student/DO288/labs/trigger-builds
+4.  skopeo copy oci-archive:php-73-ubi8-original.tar.gz docker://quay.io/${RHT_OCP4_QUAY_USER}/php-73-ubi8:latest
+5.  oc create secret generic quay-registry \
+    --from-file .dockerconfigjson=${XDG_RUNTIME_DIR}/containers/auth.json \
+    --type kubernetes.io/dockerconfigjson
+6.  oc secrets link builder quay-registry
+7.  oc import-image php --from quay.io/${RHT_OCP4_QUAY_USER}/php-73-ubi8 --confirm
+8.  oc new-app --name trigger php~http://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps --context-dir trigger-builds
+9.  oc logs -f bc/trigger
+10. oc describe bc/trigger | grep Triggered
+11. skopeo copy oci-archive:php-73-ubi8-newer.tar.gz docker://quay.io/${RHT_OCP4_QUAY_USER}/php-73-ubi8:latest
+12. oc import-image php
+13. oc get builds
+14. oc describe build trigger-2 | grep cause
+16. cd
+17. skopeo delete docker://quay.io/${RHT_OCP4_QUAY_USER}/php-73-ubi8
