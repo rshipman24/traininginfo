@@ -1,0 +1,57 @@
+1.  cd ~/DO288/labs/multicontainer-helm
+2.  helm create famouschart
+3.  cd famouschart
+4.  tree .
+5.  vi values.yaml
+      ...
+      image:
+        repository: quay.io/redhattraining/famous-quotes
+        pullPolicy: IfNotPresent
+        tag: “2.1”
+      ...
+ 6. vi templates/deployment.yaml
+      ...
+       ports:
+         - name: http
+           containerPort: 8000
+           protocol: TCP
+      ...
+7.  vi Chart.yaml  
+      ...
+      dependencies:
+        - name: mariadb
+          version: 9.3.11
+          repository: https://charts.bitnami.com/bitnami
+8.  cat ../dependencies.yaml >> Chart.yaml
+9.  helm dependency update
+10. vi values.yaml
+      ...
+      mariadb:
+        auth:
+          username: quotes
+          password: quotespwd
+          database: quotesdb
+        primary:
+          podSecurityContext:
+            enabled: false
+          containerSecurityContext:
+            enabled: false“2.1”
+      ... 
+ 11. vi values.yaml
+      ...
+      env:
+        - name: "QUOTES_HOSTNAME"
+          value: "famousapp-mariadb"
+        - name: "QUOTES_DATABASE"
+          value: "quotesdb"
+        - name: "QUOTES_USER"
+          value: "quotes"
+        - name: "QUOTES_PASSWORD"
+          value: "quotespwd"  
+ 12. oc new-project ${RHT_OCP4_DEV_USER}-multicontainer-helm
+ 13. helm install famousapp .
+ 14. oc get deployments
+ 16. oc get pods
+ 17. oc expose service famousapp-famouschart
+ 18. FAMOUS_URL=$(oc get route -n ${RHT_OCP4_DEV_USER}-multicontainer-helm famousapp-famouschart -o jsonpath='{.spec.host}'/random)
+ 19. curl $FAMOUS_URL
