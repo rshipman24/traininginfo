@@ -1,0 +1,81 @@
+1.  s2i version
+2.  s2i create s2i-do288-httpd s2i-do288-httpd
+3.  tree s2i-do288-httpd
+4.  cat ~/DO288/labs/apache-s2i/Containerfile
+      FROM registry.access.redhat.com/ubi8/ubi:8.4
+      
+      # Generic labels
+      LABEL Component="httpd" \
+        Name="s2i-do288-httpd" \
+        Version="1.0" \
+        Release="1"
+        
+      # Labels consumed by RHOCP
+      LABEL io.k8s.description="A basic Apache HTTP Server S2I builder image" \
+        io.k8s.display-name="Apache HTTP Server S2I builder image for DO288" \
+        io.openshift.expose-services="8080:http" \
+        io.openshift.s2i.scripts-url="image:///usr/libexec/s2i"
+        
+      # This label is used to categorize this image as a builder image in the
+      # RHOCP web console.
+      LABEL io.openshift.tags="builder, httpd, httpd24"
+      
+      # Apache HTTP Server DocRoot
+      ENV DOCROOT /var/www/html
+      
+      RUN yum install -y --nodocs --disableplugin=subscription-manager httpd && \
+          yum clean all --disableplugin=subscription-manager -y && \
+          echo "This is the default index page from the s2i-do288-httpd S2I builder
+          image." > ${DOCROOT}/index.html
+          
+      # Change web server port to 8080
+      RUN sed -i "s/Listen 80/Listen 8080/g" /etc/httpd/conf/httpd.conf
+      
+      # Copy the S2I scripts to the default location indicated by the
+      # io.openshift.s2i.scripts-url LABEL (default is /usr/libexec/s2i)
+      COPY ./s2i/bin/ /usr/libexec/s2i
+      
+5.  rm ~/s2i-do288-httpd/Dockerfile 
+6.  cp ~/DO288/labs/apache-s2i/Containerfile ~/s2i-do288-httpd/
+7.  cp -Rv ~/DO288/labs/apache-s2i/s2i ~/s2i-do288-httpd/
+8.  rm -f ~/s2i-do288-httpd/s2i/bin/save-artifacts
+9.  cd s2i-do288-httpd
+
+## BUILD LOCAL CONTAINER IMAGE ## 
+10. podman build -t s2i-do288-httpd .
+11. podman images
+
+## BUILD CUSTOM S2I IMAGE FROM TEMPLATE
+12. cat ~/DO288/labs/apache-s2i/index.html
+13. cp ~/DO288/labs/apache-s2i/index.html ~/s2i-do288-httpd/test/test-app/ 
+14. mkdir ~/s2i-sample-app
+15. s2i build test/test-app/ s2i-do288-httpd s2i-sample-app --as-dockerfile ~/s2i-sample-app/Containerfile
+16. cd ~/s2i-sample-app
+17. tree .
+18. cat Containerfile
+19. podman build -t s2i-sample-app .
+20. podman images
+21. podman run --name test -u 1234 -p 8080:8080 -d s2i-sample-app
+22. podman ps
+23. curl http://localhost:8080
+24. podman stop test
+
+## UPLOAD IMAGE TO REPO AND DEPLOY ON OPENSHIFT##
+25. podman login -u ${RHT_OCP4_QUAY_USER} quay.io
+26. skopeo copy containers-storage:localhost/s2i-do288-httpd docker://quay.io/${RHT_OCP4_QUAY_USER}/s2i-do288-httpd
+27. oc new-project ${RHT_OCP4_DEV_USER}-apache-s2i
+28. oc create secret generic quayio --from-file .dockerconfigjson=${XDG_RUNTIME_DIR}/containers/auth.json --type=kubernetes.io/dockerconfigjson
+29. oc secrets link builder quayio
+30. oc import-image s2i-do288-httpd --from quay.io/${RHT_OCP4_QUAY_USER}/s2i-do288-httpd --confirm
+31. oc get is
+32. oc new-app --name hello-s2i s2i-do288-httpd~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps --context-dir=html-helloworld
+33. oc logs -f bc/hello-s2i
+34. oc get pods
+35. oc expose svc hello-s2i
+36. export APP_URL=$(oc get route/hello-s2i -o jsonpath='{.spec.host}{"\n"}')
+37. echo ${APP_URL}
+38. curl ${APP_URL}
+39. oc delete project ${RHT_OCP4_DEV_USER}-apache-s2i
+40. podman rm test
+41. podman rmi -f localhost/s2i-sample-app localhost/s2i-do288-httpd registry.access.redhat.com/ubi8/ubi:8.4
+42. skopeo delete docker://quay.io/${RHT_OCP4_QUAY_USER}/s2i-do288-httpd:latest
