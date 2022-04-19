@@ -1,0 +1,31 @@
+1.  podman run --name test -it rhscl/httpd-24-rhel7 bash
+      cat /usr/libexec/s2i/assemble
+      cat /usr/libexec/s2i/run
+      cat /usr/libexec/s2i/usage
+      exit
+2.  cd DO288-apps
+3.  git checkout main
+4.  vi /home/student/DO288-apps/s2iscripts/.s2i/bin/assemble
+    ...
+    DATE=date "+%b %d, %Y @ %H:%M %p"
+    ...
+5.  vi /home/student/DO288-apps/s2iscripts/.s2i/bin/run
+    ...
+    exec run-httpd -e debug $@
+    ...
+6.  vi /home/student/DO288-apps/s2i-scripts/index.html
+    ...
+    Hello Class! DO288 rocks!!!
+    ...
+7.  oc new-project ${RHT_OCP4_DEV_USER}-s2i-scripts
+8.  oc new-app --name bonjour httpd:2.4~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps --context-dir s2i-scripts
+9.  oc logs -f bc/bonjour
+10. oc get pods
+11. oc expose svc bonjour
+12. oc get route
+13. curl http://bonjour-${RHT_OCP4_DEV_USER}-s2i-scripts.${RHT_OCP4_WILDCARD_DOMAIN}
+14. curl http://bonjour-${RHT_OCP4_DEV_USER}-s2i-scripts.${RHT_OCP4_WILDCARD_DOMAIN}/info.html
+15. oc logs deployment/bonjour
+16. cd ~
+17. oc delete project ${RHT_OCP4_DEV_USER}-s2i-scripts
+18. podman rm test
