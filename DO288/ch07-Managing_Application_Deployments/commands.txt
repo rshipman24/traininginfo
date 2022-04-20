@@ -1,0 +1,22 @@
+1.  oc new-project ${RHT_OCP4_DEV_USER}-probes
+2.  oc new-app --name probes --context-dir probes --build-env \
+    npm_config_registry=http://${RHT_OCP4_NEXUS_SERVER}/repository/nodejs \
+    nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps
+3.  oc logs -f bc/probes
+4.  oc expose svc probes
+5.  curl -i probes-${RHT_OCP4_DEV_USER}-probes.${RHT_OCP4_WILDCARD_DOMAIN}/ready ## Readiness Probe
+6.  curl -i probes-${RHT_OCP4_DEV_USER}-probes.${RHT_OCP4_WILDCARD_DOMAIN}/healthz ## Liveness Probe
+7.  curl probes-${RHT_OCP4_DEV_USER}-probes.${RHT_OCP4_WILDCARD_DOMAIN}
+8.  oc set probe deployment probes --liveness --get-url=http://:8080/healthz --initial-delay-seconds=2 --timeout-seconds=2
+9.  oc set probe deployment probes --readiness --get-url=http://:8080/ready --initial-delay-seconds=2 --timeout-seconds=2
+10. oc describe deployment probes | grep -iA 1 liveness
+11. oc get pods
+12. POD=$(oc get pods -o name | grep -v build)
+13. oc logs -f $POD
+14. ~/DO288/labs/probes/kill.sh
+15. oc logs -f $POD
+16. ~/DO288/labs/probes/not-ready.sh
+17. oc logs -f $POD
+18. oc get pods
+19. curl -is probes-${RHT_OCP4_DEV_USER}-probes.${RHT_OCP4_WILDCARD_DOMAIN} | grep 'HTTP/1.0'
+20. oc describe $POD
