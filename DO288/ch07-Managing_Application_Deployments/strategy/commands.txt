@@ -1,0 +1,9 @@
+1.  oc new-project ${RHT_OCP4_DEV_USER}-strategy
+2.  oc new-app --as-deployment-config --name mysql -e MYSQL_USER=test -e MYSQL_PASSWORD=redhat \
+    -e MYSQL_DATABASE=testdb -e MYSQL_AIO=0 \
+    --docker-image registry.redhat.io/rhel8/mysql-80
+3.  oc get pods
+4.  oc describe dc/mysql | grep -i strategy:
+5.  oc set triggers dc/mysql --from-config --remove
+6.  oc patch dc/mysql --patch '{"spec":{"strategy":{"type":"Recreate"}}}'
+7.  oc patch dc/mysql --type=json -p='[{"op":"remove", "path": "/spec/strategy/rollingParams"}]'
