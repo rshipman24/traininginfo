@@ -1,0 +1,80 @@
+1.  cd ~/DO288/labs/multicontainer-kustomize
+2.  cat famous-quotes.yaml
+3.  mkdir famous-kustomize
+4.  cd famous-kustomize
+5.  mkdir base
+6.  cp ../famous-quotes.yaml base/deployment.yaml
+7.  oc new-project ${RHT_OCP4_DEV_USER}-multicontainer-kustomize
+8.  oc apply -k base
+9.  oc get deployments
+10. oc expose service famousapp-famouschart
+11. FAMOUS_URL=$(oc get route -n ${RHT_OCP4_DEV_USER}-multicontainer-kustomize famousapp-famouschart -o jsonpath='{.spec.host}'/random)
+12. curl $FAMOUS_URL
+
+## Dev Environment Deployment Limits ##
+13. mkdir -p overlays/dev
+14. vi replica_limits.yaml
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: famousapp-famouschart
+      spec:
+        replicas: 1
+        template:
+          spec:
+            containers:
+              - name: famouschart
+                resources:
+                limits:
+                  memory: "128Mi"
+                  cpu: "250m"
+15. vi overlays/dev/kustomization.yaml
+        bases:
+        - ../../base
+        patches:
+        - replica_limits.yaml
+16. oc apply -k overlays/dev
+17. curl $FAMOUS_URL
+18. oc get deployments famousapp-famouschart -o jsonpath='{.spec.template.spec.containers[0].resources.limits.memory}'
+
+## Stage environment Deployment Limits ##
+19. cp -R overlays/dev overlays/stage
+20. vi overlays/dev/replica_limits.yaml
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: famousapp-famouschart
+      spec:
+        replicas: 2
+        template:
+          spec:
+            containers:
+              - name: famouschart
+                resources:
+                limits:
+                  memory: "256Mi"
+                  cpu: "500m"
+21. oc apply -k overlays/stage
+22. curl $FAMOUS_URL
+23. oc get deployments famousapp-famouschart -o jsonpath='{.spec.template.spec.containers[0].resources.limits.memory}' 
+
+## PROD environment Deployment Limits ##
+24. cp -R overlays/dev overlays/prod
+25. vi overlays/prod/replica_limits.yaml
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: famousapp-famouschart
+      spec:
+        replicas: 5
+        template:
+          spec:
+            containers:
+              - name: famouschart
+                resources:
+                limits:
+                  memory: "512Mi"
+                  cpu: "1000m"
+26. oc apply -k overlays/prod
+27. curl $FAMOUS_URL
+28. oc get deployments famousapp-famouschart -o jsonpath='{.spec.template.spec.containers[0].resources.limits.memory}' 
