@@ -1,0 +1,59 @@
+1.  cd DO288-apps
+2.  git checkout main
+3.  git checkout -b app-deploy
+4.  git push -u origin app-deploy
+5.  vi ~/DO288-apps/quip/src/main/java/com/redhat/training/example/Quip.java
+    ...output omitted...
+    @Path("/")
+    public class Quip {
+    
+    @GET
+    @Produces("text/plain")
+    public Response index() throws Exception {
+        String host = InetAddress.getLocalHost().getHostName();
+        return Response.ok("Veni, vidi, vici...\n").build();
+      }
+    @GET
+    @Path("/ready")
+    @Produces("text/plain")
+    public Response ready() throws Exception {
+        return Response.ok("OK\n").build();
+      }
+    ...output omitted...
+6.  oc new-project ${RHT_OCP4_DEV_USER}-app-deploy
+7.  oc new-app --as-deployment-config --name quip \
+    --build-env MAVEN_MIRROR_URL=http://${RHT_OCP4_NEXUS_SERVER}/repository/java \
+    -i redhat-openjdk18-openshift:1.5 --context-dir quip https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#app-deploy
+8.  oc logs -f bc/quip
+9.  oc get pods
+10. oc logs quip-1-59j8q
+11. oc describe svc/quip
+12. oc expose svc quip
+13. curl http://quip-${RHT_OCP4_DEV_USER}-app-deploy.${RHT_OCP4_WILDCARD_DOMAIN}
+14. oc set probe dc/quip \
+    --liveness --readiness --get-url=http://:8080/ready \
+    --initial-delay-seconds=30 --timeout-seconds=2
+15. oc describe dc/quip | grep http-get
+16. oc get pods
+17. oc describe pod quip-2-n6nzw | grep http-get
+18. curl http://quip-${RHT_OCP4_DEV_USER}-app-deploy.${RHT_OCP4_WILDCARD_DOMAIN}
+19. cat ~/DO288/labs/app-deploy/app-change.sh
+        #!/bin/bash
+        echo "Changing quip to english..."
+        sed -i 's/Veni, vidi, vici/I came, I saw, I conquered/g' /home/student/DO288-apps/quip/src/main/java/com/redhat/training/example/Quip.java
+        
+        echo "Committing the changes..."
+        cd /home/student/DO288-apps/quip
+        git commit -a -m "Changed quip lang to english"
+        
+        echo "Pushing changes to classroom Git repository..."
+        git push
+        cd
+20.  ~/DO288/labs/app-deploy/app-change.sh
+21. oc start-build quip -F
+22. oc get pods
+23. curl http://quip-${RHT_OCP4_DEV_USER}-app-deploy.${RHT_OCP4_WILDCARD_DOMAIN}
+24. oc rollback dc/quip
+25. oc get pods
+26. curl http://quip-${RHT_OCP4_DEV_USER}-app-deploy.${RHT_OCP4_WILDCARD_DOMAIN}
+27. oc delete project ${RHT_OCP4_DEV_USER}-app-deploy
