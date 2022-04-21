@@ -1,0 +1,11 @@
+1.  oc project ${RHT_OCP4_DEV_USER}-external-service
+2.  oc status
+3.  oc get pods
+4.  oc rsh todoapp-1-6z6qg env | grep DATABASE
+5.  HOSTNAME=$(oc get route todoapp -o jsonpath='{.spec.host}')
+6.  curl -si http://${HOSTNAME}/todo/api/items/6 ## Will not be able to connect
+7.  dbhost=$(echo mysql.ocp-${RHT_OCP4_WILDCARD_DOMAIN#"apps."})
+8.  mysqlshow -h${dbhost} -utodoapp -predhat123 todo
+9.  oc create svc externalname tododb --external-name ${dbhost}
+10. oc get svc
+11. curl -si http://${HOSTNAME}/todo/api/items/6 ## Should be successful
