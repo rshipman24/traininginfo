@@ -7,3 +7,70 @@
 5.  oc set triggers dc/mysql --from-config --remove
 6.  oc patch dc/mysql --patch '{"spec":{"strategy":{"type":"Recreate"}}}'
 7.  oc patch dc/mysql --type=json -p='[{"op":"remove", "path": "/spec/strategy/rollingParams"}]'
+8.  vi ~/DO288/labs/strategy/users.sql
+
+        CREATE TABLE IF NOT EXISTS users (
+            user_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+            name varchar(100) NOT NULL,
+            email varchar(100) NOT NULL,
+            PRIMARY KEY (user_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        insert into users(name,email) values ('user1', 'user1@example.com');
+        insert into users(name,email) values ('user2', 'user2@example.com');
+        insert into users(name,email) values ('user3', 'user3@example.com');
+9.  vi ~/DO288/labs/strategy/import.sh
+
+         #!/bin/bash
+        ...output omitted...
+        echo 'Downloading SQL script that initializes the database...'
+        curl -s -O https://github.com/RedHatTraining/DO288-apps/releases/download/OCP-4.1-1/users.sql
+        
+        echo "Trying $HOOK_RETRIES times, sleeping $HOOK_SLEEP sec between tries:"
+        while [ "$HOOK_RETRIES" != 0 ]; do
+            echo -n 'Checking if MySQL is up...'
+                if mysqlshow -h$MYSQL_SERVICE_HOST -u$MYSQL_USER -p$MYSQL_PASSWORD -P3306 $MYSQL_DATABASE &>/dev/null
+                    then
+                        echo 'Database is up'
+                        break
+                    else
+                        echo 'Database is down'
+                        # Sleep to wait for the MySQL pod to be ready
+                        sleep $HOOK_SLEEP
+                    fi
+                let HOOK_RETRIES=HOOK_RETRIES-1
+         done
+            if [ "$HOOK_RETRIES" = 0 ]; then
+                echo 'Too many tries, giving up'
+            exit 1
+            fi
+        
+        # Run the SQL script
+        if mysql -h$MYSQL_SERVICE_HOST -u$MYSQL_USER -p$MYSQL_PASSWORD -P3306 $MYSQL_DATABASE < /tmp/users.sql
+        then
+            echo 'Database initialized successfully'
+        else
+            echo 'Failed to initialize database'
+            exit 2
+        fi
+10. cat ~/DO288/labs/strategy/post-hook.sh
+        ...output omitted...
+        oc patch dc/mysql --patch \
+        '{"spec":{"strategy":{"recreateParams":{"post":{"failurePolicy":
+        "Abort","execNewPod":{"containerName":"mysql","command":["/bin/sh","-c","curl
+        -L -s https://github.com/RedHatTraining/DO288-apps/releases/download/OCP-4.1-1/
+        import.sh -o /tmp/import.sh&&chmod 755 /tmp/import.sh&&/tmp/import.sh"]}}}}}}'
+
+11. ~/DO288/labs/strategy/post-hook.sh
+12. oc describe dc/mysql | grep -iA 3 'strategy:'
+13. oc rollout latest dc/mysql
+14. watch -n 2 oc get pods
+15. oc logs mysql-2-hook-post
+16. oc set env dc/mysql HOOK_RETRIES=5
+17. oc rollout latest dc/mysql
+18. watch -n 2 oc get pods
+19. oc logs -f mysql-3-hook-post
+20. oc get pods
+21. oc rsh mysql-3-3p4m1
+        mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "select * from users;"
+        exit
+22. oc delete project ${RHT_OCP4_DEV_USER}-strategy
+
