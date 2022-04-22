@@ -48,3 +48,61 @@
 1. Integrate a containerized application with non-containerized services.
 2. Deploy containerized third-party applications following recommended practices for OpenShift.
 3. Use a Red Hat OpenShift Application Runtime to deploy an application.
+
+# DO380 Folder Structure
+## Chapter 1. Moving From Kubernetes to OpenShift 
+1. Deploying Kubernetes Applications on OpenShift
+2. Guided Exercise: Optimizing Kubernetes Applications for OpenShift
+
+## Chapter 2. Introducing Automation with OpenShift 
+1. Querying OpenShift Resources
+2. Deploying Scripts on OpenShift
+3. Navigating the OpenShift REST API
+4. Writing Ansible Playbooks to Manage OpenShift Resources
+
+## Chapter 3. Managing OpenShift Operators
+1. Installing Operators
+2. Managing Cluster Operators
+
+## Chapter 4. Implementing GitOps with Jenkins
+1. Deploying Jenkins on OpenShift
+2. Configuring OpenShift Resources Using a Declarative GitOps Workflow
+3. Configuring OpenShift using GitOps and Jenkins
+
+## Chapter 5. Configuring Enterprise Authentication
+1. Configuring the LDAP Identity Provider
+2. Synchronizing OpenShift Groups with LDAP
+
+## Chapter 6. Configuring Trusted TLS Certificates
+1. Integrating OpenShift with an Enterprise Certificate Authority
+2. Configuring Applications to Trust the Enterprise Certificate Authority
+3. Troubleshooting OpenShift Certificates
+
+## Chapter 7. Configuring Dedicated Node Pools 239
+1. Adding Compute Nodes
+2. Creating Custom Machine Config Pools
+
+## Chapter 8. Configuring Persistent Storage
+1. Provisioning Shared Storage for Applications
+2. Provisioning Block Storage for Databases
+3. Installing the Local Storage Operator
+
+## Chapter 9. Managing Cluster Monitoring and Metrics
+1. Introducing the Cluster Monitoring Stack
+2. Managing OpenShift Alerts
+3. Troubleshooting Using the Cluster Monitoring Stack
+4. Configuring Storage for the Cluster Monitoring Stack
+
+## Chapter 10. Provisioning and Inspecting Cluster Logging
+1. Deploying Cluster Logging
+2. Querying Cluster Logs with Kibana
+3. Visualizing Cluster Logs with Kibana
+4. Diagnosing Cluster Logging Problems
+
+## Chapter 11. Recovering Failed Worker Nodes
+1. Profiling Degraded Worker Nodes
+2. Troubleshooting Worker Node Capacity Issues
+
+
+	
+
