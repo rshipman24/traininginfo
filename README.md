@@ -1,7 +1,6 @@
 # DO288 Folder Structure
 ## Chapter 1: Deploying and Managing Applications on an OpenShift Cluster
-### Deploy applications using various application packaging methods to an OpenShift cluster and
-manage their resources.
+### Deploy applications using various application packaging methods to an OpenShift cluster and manage their resources.
 1. Describe the architecture and new features in OpenShift 4.
 2. Deploy an application to the cluster from a Dockerfile with the CLI.
 3. Deploy an application from a container image and manage its resources using the web console.
