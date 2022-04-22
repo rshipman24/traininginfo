@@ -1,0 +1,41 @@
+1.  cd ~/DO288-apps/nexus3
+2.  git checkout main
+3.  grep VOLUME Dockerfile
+4.  grep NEXUS_DATA Dockerfile
+5.  grep ENV Dockerfile
+6.  podman build -t nexus3 .
+7.  podman login -u ${RHT_OCP4_QUAY_USER} quay.io
+8.  skopeo copy containers-storage:localhost/nexus3 docker://quay.io/${RHT_OCP4_QUAY_USER}/nexus3
+9.  cp -r ~/DO288/labs/nexus-service/nexus-chart ~/
+10. grep -A1 "kind: DockerImage" ~/nexus-chart/templates/imagestream.yaml
+11. grep -B1 -A5 limits: ~/nexus-chart/templates/deployment.yaml
+12. vi ~/nexus-chart/values.yaml
+        ...output omitted...
+        initialDelaySeconds: 120
+        ...output omitted...
+        timeoutSeconds: 30
+13. vi ~/nexus-chart/templates/deployment.yaml
+        ...output omitted...
+        initialDelaySeconds: 120
+        ...output omitted...
+        timeoutSeconds: 30  
+14. vi ~/nexuschart/templates/pvc.yaml
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          labels:
+            app: {{ .Values.nexusServiceName }}
+          name: nexus-data-pvc
+        ...output omitted...
+15. oc new-project ${RHT_OCP4_DEV_USER}-nexus-service
+16. podman login -u ${RHT_OCP4_QUAY_USER} quay.io
+17. oc create secret generic quayio --from-file .dockerconfigjson=${XDG_RUNTIME_DIR}/containers/auth.json --type kubernetes.io/dockerconfigjson
+18. oc secrets link default quayio --for pull
+19. echo "nexus3-${RHT_OCP4_DEV_USER}.${RHT_OCP4_WILDCARD_DOMAIN}"
+20. helm install nexus3 ~/nexus-chart
+21. oc get pods
+22. oc logs -f nexus3-1-kfwwh
+23. oc get pods
+24. oc get route
+25. oc delete project ${RHT_OCP4_DEV_USER}-nexus-service
+26. skopeo delete docker://quay.io/${RHT_OCP4_QUAY_USER}/nexus3
