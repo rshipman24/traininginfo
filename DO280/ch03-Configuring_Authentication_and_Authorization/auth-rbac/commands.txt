@@ -1,0 +1,37 @@
+1.  oc get clusterrolebinding -o wide | grep -E 'NAME|self-provisioners'
+2.  oc describe clusterrolebindings self-provisioners
+3.  oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
+4.  oc describe clusterrolebindings self-provisioners  ## Should be gone ##
+5.  oc get clusterrolebinding -o wide | grep -E 'NAME|self-provisioner'  ## Should be gone ##
+
+## Validate User Can create new project ##
+6.  oc login -u leader -p redhat
+7.  oc new-project test ## Should be an auth error ##
+
+## Update Access ##
+8.  oc login -u admin -p redhat
+9.  oc new-project auth-rbac
+10. oc policy add-role-to-user admin leader
+11. oc adm groups new dev-group ## Create dev-group #
+12. oc adm groups add-users dev-group developer  ## Add user to group ##
+13. oc adm groups new qa-group ## Create qa-group ##
+14. oc adm groups add-users qa-group qa-engineer ## Add user to group ##
+15. oc get groups
+
+## Assign Roles to Users ##
+16. oc login -u leader -p redhat
+17. oc policy add-role-to-group edit dev-group
+18. oc policy add-role-to-group view qa-group
+19. oc get rolebindings -o wide
+
+## Validate Access with new roles ##
+20. oc login -u developer -p developer
+21. oc new-app --name httpd httpd:2.4
+22. oc policy add-role-to-user edit qa-engineer ## user unable to update roles ##
+23. oc login -u qa-engineer -p redhat
+24. oc scale deployment httpd --replicas 3 ## Unable to perform this task ##
+
+## Restore self provisioning ability ##
+25. oc login -u admin -p redhat
+26. oc adm policy add-cluster-role-to-group --rolebinding-name self-provisioners self-provisioner system:authenticated:oauth
+
