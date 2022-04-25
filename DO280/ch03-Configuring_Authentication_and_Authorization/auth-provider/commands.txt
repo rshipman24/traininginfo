@@ -1,0 +1,60 @@
+1.  htpasswd -c -B -b ~/DO280/labs/auth-provider/htpasswd admin redhat
+2.  htpasswd -b ~/DO280/labs/auth-provider/htpasswd developer developer
+3.  cat ~/DO280/labs/auth-provider/htpasswd
+    ...
+    admin:$2y$05$QPuzHdl06IDkJssT.tdkZuSmgjUHV1XeYU4FjxhQrFqKL7hs2ZUl6
+    developer:$apr1$0Nzmc1rh$yGtne1k.JX6L5s5wNa2ye
+    ...
+4.  oc create secret generic localusers --from-file htpasswd=/home/student/DO280/labs/auth-provider/htpasswd -n openshift-config
+5.  oc adm policy add-cluster-role-to-user cluster-admin admin
+6.  oc get oauth cluster -o yaml > ~/DO280/labs/auth-provider/oauth.yaml
+7.  vi ~/DO280/labs/auth-provider/oauth.yaml
+    spec:
+      identityProviders:
+      - htpasswd:
+          fileData:
+            name: localusers
+        mappingMethod: claim
+        name: myusers
+        type: HTPasswd
+8.  oc replace -f ~/DO280/labs/auth-provider/oauth.yaml
+9.  oc get nodes
+10. oc login -u developer -p developer
+11. oc get nodes ### Should get auth effor ##
+12. oc login -u admin -p redhat
+13. oc get identity
+14. oc extract secret/localusers -n openshift-config --to ~/DO280/labs/auth-provider/ --confirm
+15. htpasswd -b ~/DO280/labs/auth-provider/htpasswd manager redhat
+16. cat ~/DO280/labs/auth-provider/htpasswd
+    ...
+    admin:$2y$05$QPuzHdl06IDkJssT.tdkZuSmgjUHV1XeYU4FjxhQrFqKL7hs2ZUl6
+    developer:$apr1$0Nzmc1rh$yGtne1k.JX6L5s5wNa2ye
+    manager:$apr1$CJ/tpa6a$sLhjPkIIAy755ZArTT5EH/
+    ...
+17. oc set data secret/localusers --from-file htpasswd=/home/student/DO280/labs/auth-provider/htpasswd -n openshift-config
+18. oc login -u manager -p redhat
+19. oc new-project auth-provider
+20. oc login -u admin -p redhat
+21. oc extract secret/localusers -n openshift-config --to ~/DO280/labs/auth-provider/ --confirm
+22. MANAGER_PASSWD="$(openssl rand -hex 15)"
+23. htpasswd -b ~/DO280/labs/auth-provider/htpasswd manager ${MANAGER_PASSWD}
+24. oc set data secret/localusers --from-file htpasswd=/home/student/DO280/labs/auth-provider/htpasswd -n openshift-config
+25. oc login -u manager -p ${MANAGER_PASSWD}
+26. oc login -u admin -p redhat
+27. oc extract secret/localusers -n openshift-config --to ~/DO280/labs/auth-provider/ --confirm
+28. htpasswd -D ~/DO280/labs/auth-provider/htpasswd manager
+29. oc set data secret/localusers --from-file htpasswd=/home/student/DO280/labs/auth-provider/htpasswd -n openshift-config
+30. oc delete identity "myusers:manager"
+31. oc delete user manager
+32. oc login -u manager -p ${MANAGER_PASSWD} ##Should get an user error ##
+33. oc get identity
+34. oc extract secret/localusers -n openshift-config --to -
+35. oc login -u kubeadmin -p ${RHT_OCP4_KUBEADM_PASSWD}
+36. oc delete project auth-provider
+37. oc edit oauth
+38. oc delete secret localusers -n openshift-config
+39. oc delete user --all
+40. oc delete identity --all
+
+
+
